@@ -14,7 +14,8 @@ if (dir.exists("~/disks/y/ontwapps/Timer/Users/Stijn/Model/deltaCO2")) {     #De
 
 
 # source("TCRE.R")
-source("TCRE-T2010HV.R")
+# source("TCRE-T2010HV.R")
+source("TCRE+nonCO2.R")
 #source("TCREcor.R")
 #source("TCREcorT-tcre.R")
 #source("TCREcorCO2-tcre.R")
@@ -140,7 +141,7 @@ f.dataframe <- function(N,Ttarget,f.seed) {
   p.sample <- f.costs.sample(N, f.seed)
   # reken resultaten uit
   sample_en_result <- f.cumuCO2result(N,Ttarget,cumuvstemp.sample)
-  costs.sample_en_result <- data.frame(sample_en_result,f.costsresult(N,sample_en_result[,4], p.sample))
+  costs.sample_en_result <- data.frame(sample_en_result,f.costsresult(N,sample_en_result$cumuCO2result, p.sample))
   return(costs.sample_en_result)
 }
 
@@ -191,11 +192,11 @@ f.costs.CCmatrix <- function(N,f.seed) {
     # print(i)
     # bereken resultaten
     sample_en_result <- f.cumuCO2result(N,i,cumuvstemp.sample)
-    costs.sample_en_result <- data.frame(sample_en_result,f.costsresult(N,sample_en_result[,4],costs.sample))
+    costs.sample_en_result <- data.frame(sample_en_result,f.costsresult(N,sample_en_result$cumuCO2result,costs.sample))
     
     # bereken CC waarden
-    costs.CCmatrix.hulp <- cor(costs.sample_en_result)[c(-1,-6,-7),]
-    costs.CCmatrix <- rbind(costs.CCmatrix, costs.CCmatrix.hulp[,7])
+    costs.CCmatrix.hulp <- cor(costs.sample_en_result)[c(-1,-7,-8),]
+    costs.CCmatrix <- rbind(costs.CCmatrix, costs.CCmatrix.hulp[,8])
     
     teller <- teller + 1
   }
