@@ -45,6 +45,16 @@ CO2.results2 <-gather(CO2.results,temp,cumuCO2,as.character(seq(1, 4, by = 0.1))
 par(mfrow=c(1,1))
 plot(CO2.results2$temp~CO2.results2$cumuCO2,xlim=c(0,9), ylim=c(0,4))
 
+# plaatje van non-CO2 ricos
+plot(nonCO2.upperbounds~nonCO2temp$cumuCO2, xlim=c(0,8), ylim=c(0,0.3))
+abline(a=nonCO22010,b=nonCO2ricos[1])
+abline(a=nonCO22010,b=nonCO2ricos[2])
+abline(a=nonCO22010,b=nonCO2ricos[3])
+abline(a=nonCO22010,b=nonCO2ricos[4])
+abline(a=nonCO22010,b=nonCO2ricos[5])
+abline(a=nonCO22010,b=nonCO2ricos[6])
+# gemiddelde (zonder rechte lijn)
+abline(a=nonCO22010,b=nonCO2max)
 
 #----------- histogrammen --------------
 
@@ -191,10 +201,35 @@ q = ggplot(CCNOcosts[variable %in% c('T2010','TCRE','nonCO2')])
 q = q + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="fill")
 q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
 q = q + scale_fill_manual(values=c("CO22010"="grey","cumuCO2result"="dark blue","T2010"="black","TCRE"="green","nonCO2"="blue"))
-q = q + ggtitle("CC values of T2010 (HV), TCRE (bounded) and nonCO2 (bounded and depending)")
+q = q + ggtitle("CC values of T2010, TCRE and nonCO2")
 q
 ggsave(paste("CC_T2010_TCRE_nonCO2.png"),q)
 
+
+
+# met nonCO2 = nonCO2int + deltaCO2 * TCRnonCO2
+
+source("TCRE+denonCO2skewed.R")
+
+# krijgt een CC matrix
+CCmatNOcosts <- f.CCmatrix(N,s.seed)
+CCdataNOcosts = data.table(CCmatNOcosts)
+# maak er een 'werkbaarder' format van
+CCNOcosts <-gather(CCdataNOcosts,variable,value,c('T2010','TCRE','TCRnonCO2','nonCO2int'))
+CCNOcosts=data.table(CCNOcosts)
+CCNOcosts$temp <- as.character(seq(1, 4, by = 0.1))
+
+# plotting (probeersel) staven op elkaar
+# eerst alle getallen positief maken (door te kwadrateren)
+CCNOcosts$value <- CCNOcosts$value*CCNOcosts$value
+
+q = ggplot(CCNOcosts[variable %in% c('T2010','TCRE','TCRnonCO2','nonCO2int')])
+q = q + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="fill")
+q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
+q = q + scale_fill_manual(values=c("CO22010"="grey","cumuCO2result"="dark blue","T2010"="black","TCRE"="green","TCRnonCO2"="blue","nonCO2int"="pink"))
+q = q + ggtitle("CC values of T2010 (HV), TCRE (bounded) and nonCO2 (bounded and depending)")
+q
+ggsave(paste("CC_T2010_TCRE_nonCO2.png"),q)
 
 
 # ZONDER non CO2

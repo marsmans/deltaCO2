@@ -17,7 +17,7 @@ if (dir.exists("~/disks/y/ontwapps/Timer/Users/Stijn/Model/modelTt")) {     #Den
 source("TCRE-T2010HV.R")
 source("TCRE+nonCO2.R")
 source("TCRE+depnonCO2.R")
-
+source("TCRE+denonCO2skewed.R")
 
 #--------- maak data per Ttarget ----------------
 
@@ -51,16 +51,38 @@ CO2.results = data.table(CO2.results)
 
 
 CO2.results <- NULL
+T2010.sample <- NULL
+TCRE.sample <- NULL
+nonCO2.sample <- NULL
 for (i in c(1.5,2,3)) {
   data <- f.dataframe(N,i,s.seed)
+  T2010.sample <- cbind(T2010.sample, data$T2010)
+  TCRE.sample <- cbind(TCRE.sample, data$TCRE)
+  # niet skewed:
+  #nonCO2.sample <- cbind(nonCO2.sample, data$TCRnonCO2*(data$cumuCO2result + a.nonCO2))
+  # skewed:
+  nonCO2.sample <- cbind(nonCO2.sample, data$TCRnonCO2*data$cumuCO2result + data$nonCO2int)
   CO2.results <- cbind(CO2.results, data$cumuCO2result)
 }
 colnames(CO2.results) <- as.character(c(1.5,2,3))
+colnames(T2010.sample) <- as.character(c(1.5,2,3))
+colnames(TCRE.sample) <- as.character(c(1.5,2,3))
+colnames(nonCO2.sample) <- as.character(c(1.5,2,3))
 CO2.results = data.table(CO2.results)
+T2010.sample = data.table(T2010.sample)
+TCRE.sample = data.table(TCRE.sample)
+nonCO2.sample = data.table(nonCO2.sample)
 
 
 # maak histogrammen van result
 hist(CO2.results)
+
+# histogrammen van samples
+hist(T2010.sample)
+hist(TCRE.sample)
+hist(nonCO2.sample)
+
+
 
 #--------- bundel resultaten van de kosten voor verschillende Ttarget --------------
 

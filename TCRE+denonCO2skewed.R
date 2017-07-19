@@ -88,6 +88,9 @@ nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/nonCO2temp$cumuCO2
 # gemiddelde van 5 richtingscoefficienten:
 TCRnonCO2max <- mean(nonCO2ricos[-1])
 
+
+# vanaf hier dus niet meer geldig in deze versie:
+
 # om te zorgen dat als nonCO22010 op een maximale waarde wordt gesampled, TCRnonCO2 ook maximaal is (om een scheve verdeling te vermijden)
 # nemen we een relatie aan tussen nonCO22010 en TCRnonCO2
 # nonCO22010 = a*TCRnonCO2 + b
@@ -95,7 +98,10 @@ TCRnonCO2max <- mean(nonCO2ricos[-1])
 # en: nonCO22010 = nonCO22010max => TCRnonCO2 = TCRnonCO2max
 # dus b = 0 en a = nonCO22010max/TCRnonCO2max
 
-a.nonCO2 <- nonCO22010max/TCRnonCO2max
+#a.nonCO2 <- nonCO22010max/TCRnonCO2max
+
+# tot hier...
+
 
 # afwijking door nonCO2 schommelt rond 0
 nonCO2mean <- 0
@@ -110,26 +116,27 @@ f.cumuvstemp.sample <- function(N, f.seed) {
   
   # maak random LHS
   set.seed(f.seed)
-  x <- randomLHS(N, 3)
+  x <- randomLHS(N, 4)
   # geef namen
-  colnames(x) <- c("T2010", "TCRE", "TCRnonCO2")
+  colnames(x) <- c("T2010", "TCRE", "TCRnonCO2","nonCO2int")
   
   # transformeer random LHS naar LHS met goede parameters
   T2010 <- qnorm(x[,1], mean=T2010mean, sd=T2010std)
   TCRE <- qpert(x[,2], coef(fLL)[2], TCREmean, coef(fUL)[2], shape = 4)
-  nonCO2 <- qpert(x[,3], -1*TCRnonCO2max, nonCO2mean, TCRnonCO2max, shape = 4)
+  TCRnonCO2 <- qpert(x[,3], -1*TCRnonCO2max, nonCO2mean, TCRnonCO2max, shape = 4)
+  nonCO2int <- qpert(x[,4], -1*nonCO22010max, nonCO2mean, nonCO22010max, shape = 4)
   
   
   # bundel in dataframe
-  return(data.frame(T2010,TCRE,nonCO2))
+  return(data.frame(T2010,TCRE,TCRnonCO2,nonCO2int))
 }
 
 
 
 #----------- Define model ---------------------
 
-oneRun <- function(Ttarget,T2010,TCRE,TCRnonCO2) {
-  return((Ttarget - T2010 + a.nonCO2*TCRnonCO2)/(TCRE + TCRnonCO2))
+oneRun <- function(Ttarget,T2010,TCRE,TCRnonCO2,nonCO2int) {
+  return((Ttarget - T2010 + nonCO2int)/(TCRE + TCRnonCO2))
 }
 
 
@@ -141,7 +148,7 @@ oneRun <- function(Ttarget,T2010,TCRE,TCRnonCO2) {
 f.cumuCO2result <- function(N, Ttarget, sample) {
   f.Ttarget <- rep(Ttarget, N)
   # run model
-  cumuCO2result <- mapply(oneRun, f.Ttarget, sample[,1], sample[,2], sample[,3])
+  cumuCO2result <- mapply(oneRun, f.Ttarget, sample[,1], sample[,2], sample[,3], sample[,4])
   # plak resultaat aan sample
   return(data.frame(f.Ttarget, sample, cumuCO2result))
 }
@@ -163,7 +170,7 @@ f.CCmatrix <- function(N,f.seed) {
     # print(i)
     sample_en_result <- f.cumuCO2result(N,i,cumuvstemp.sample)
     CCmatrix.hulp <- cor(sample_en_result)[-1,]
-    CCmatrix <- rbind(CCmatrix, CCmatrix.hulp[-4,5])
+    CCmatrix <- rbind(CCmatrix, CCmatrix.hulp[-5,6])
     
     teller <- teller + 1
   }
