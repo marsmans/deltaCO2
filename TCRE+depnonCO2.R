@@ -51,10 +51,10 @@ TCREstd2 = (TCREstd05 + TCREstd95)/2
 # T2016: 1.01 +- 0.13 (2sigma)
 # verschil in HadCrut + IRW tussen T2016 en T2010: 0.1151
 # Neem dan voor T2010: 1.01 - 0.115 = 0.90 +- 0.13 (2sigma)
-# gemiddelde: 0.9
+# gemiddelde: 0.90
 # standaardafwijking: 0.13/2 = 0.065
 
-T2010mean <- 0.9
+T2010mean <- 0.90
 T2010std <- 0.065
 
 
@@ -76,17 +76,26 @@ nonCO2.upperbounds <- (nonCO2temp$uppertemp - nonCO2temp$lowertemp)/2
 #coef(nonCO2lijn)
 # dan nemen we het gemiddelde van alle 6 lijnen door 0 en een upperbound
 
-# We nemen aan: in 2010 is de afwijking door nonCO2 gelijk aan die in de ellips van 430-480
-nonCO22010max <- nonCO2.upperbounds[1]
-
-# 5 richtingscoefficienten van nonCO22010max naar andere punten:
-nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/nonCO2temp$cumuCO2
-
 # 6 ricos van 0 naar andere punten
 #nonCO2ricos <- (nonCO2.upperbounds)/nonCO2temp$cumuCO2
 
-# gemiddelde van 5 richtingscoefficienten:
+# maar: hij hoeft ook niet door 0 te gaan, sterker nog, hij gaat door de waarde van de ellips van 430-480:
+
+# We nemen aan: in 2010 is de afwijking door nonCO2 gelijk aan die in de ellips van 430-480
+nonCO22010max <- nonCO2.upperbounds[1]
+
+# 5 richtingscoefficienten van nonCO22010max naar andere punten: !!! niet correct! !!!
+#nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/nonCO2temp$cumuCO2
+
+# 5 richtingscoefficienten van nonCO22010max op cumuCO2 (2010-2100) = 0, en dus op cumuCO2 (2010-2100) = 1.339, naar andere punten
+cumuCO22010.rico <- 1.339
+nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/(nonCO2temp$cumuCO2 - cumuCO22010.rico)
+
+
+# gemiddelde van 5 of 6 richtingscoefficienten:
+#TCRnonCO2max <- mean(nonCO2ricos)
 TCRnonCO2max <- mean(nonCO2ricos[-1])
+TCRnonCO2max2 <- mean(nonCO2ricos)
 
 # om te zorgen dat als nonCO22010 op een maximale waarde wordt gesampled, TCRnonCO2 ook maximaal is (om een scheve verdeling te vermijden)
 # nemen we een relatie aan tussen nonCO22010 en TCRnonCO2

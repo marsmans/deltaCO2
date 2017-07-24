@@ -80,13 +80,24 @@ nonCO2.upperbounds <- (nonCO2temp$uppertemp - nonCO2temp$lowertemp)/2
 nonCO22010max <- nonCO2.upperbounds[1]
 
 # 5 richtingscoefficienten van nonCO22010max naar andere punten:
-nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/nonCO2temp$cumuCO2
+#nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/nonCO2temp$cumuCO2
 
 # 6 ricos van 0 naar andere punten
 #nonCO2ricos <- (nonCO2.upperbounds)/nonCO2temp$cumuCO2
 
-# gemiddelde van 5 richtingscoefficienten:
+
+# 5 richtingscoefficienten van nonCO22010max naar andere punten: !!! niet correct! !!!
+#nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/nonCO2temp$cumuCO2
+
+# 5 richtingscoefficienten van nonCO22010max op cumuCO2 (2010-2100) = 0, en dus op cumuCO2 (2010-2100) = 1.339, naar andere punten
+cumuCO22010.rico <- 1.339
+nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/(nonCO2temp$cumuCO2 - cumuCO22010.rico)
+
+
+# gemiddelde van 5 of 6 richtingscoefficienten:
+#TCRnonCO2max <- mean(nonCO2ricos)
 TCRnonCO2max <- mean(nonCO2ricos[-1])
+
 
 
 # vanaf hier dus niet meer geldig in deze versie:
