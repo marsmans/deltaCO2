@@ -56,9 +56,17 @@ unlCO2.result <- unlist(CO2.results)
 plot(unlnonCO2~unlCO2.result, main = "nonCO2 sample", xlim = c(-0.3,7), ylim = c(-0.35,0.35), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "temperature change relative to pi (*C)")
 
 
+# plaatje van CO2.results met nonCO2sample
+O2.results <- data.table(CO2.results)
+CO2.results2 <-gather(CO2.results,temp,cumuCO2,as.character(seq(1, 4, by = 0.1)))
+par(mfrow=c(1,1))
+plot(CO2.results2$temp~CO2.results2$cumuCO2,xlim=c(-0.3,8), ylim=c(-0.35,4), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "temperature change relative to pi (*C)")
+points(unlnonCO2~unlCO2.result)
+
+
 # plaatje van non-CO2 ricos
 cumuCO22010forupperboundsfixed <- (nonCO2temp$cumuCO2 - cumuCO22010.rico)
-plot(nonCO2.upperbounds~cumuCO22010forupperboundsfixed, xlim=c(0,8), ylim=c(0,0.3),xlab = "cumuCO2 (2010-2100) (TtCO2)", ylab = "Temperature")
+plot(nonCO2.upperbounds~cumuCO22010forupperboundsfixed, xlim=c(0,8), ylim=c(0,0.3),xlab = "cumuCO2 (2010-2100) (TtCO2)", ylab = "Temperature change relative to pi (*C)")
 abline(a=nonCO22010max,b=nonCO2ricos[1])
 abline(a=nonCO22010max,b=nonCO2ricos[2])
 abline(a=nonCO22010max,b=nonCO2ricos[3])

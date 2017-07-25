@@ -94,8 +94,8 @@ nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/(nonCO2temp$cumuCO2 - cumuCO
 
 # gemiddelde van 5 of 6 richtingscoefficienten:
 #TCRnonCO2max <- mean(nonCO2ricos)
-TCRnonCO2max <- mean(nonCO2ricos[-1])
-TCRnonCO2max2 <- mean(nonCO2ricos)
+TCRnonCO2max2 <- mean(nonCO2ricos[-1])
+TCRnonCO2max <- mean(nonCO2ricos)
 
 # om te zorgen dat als nonCO22010 op een maximale waarde wordt gesampled, TCRnonCO2 ook maximaal is (om een scheve verdeling te vermijden)
 # nemen we een relatie aan tussen nonCO22010 en TCRnonCO2
