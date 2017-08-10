@@ -60,54 +60,31 @@ T2010std <- 0.065
 
 #------------- non-CO2 ----------------------------------
 
-# nonCO2low+up bevat de punten op de ellips boven en onder het middelpunt van de ellips
-nonCO2temp <- read.csv(file = "./../Databases/nonCO2low+up.txt", header = TRUE)
-# nonCO2temps geeft het hoogste en laagste punt van de ellips
-#nonCO2temp <- read.csv(file = "./../Databases/nonCO2temps.txt", header = TRUE)
+# data van excell sheet Detlef
+#nonCO2ssp <- read.csv(file = "./../Databases/ssp_data_update_naar_R.csv", header = TRUE, sep = ";")
+nonCO2ssp <- read.csv(file = "./../Databases/ssp_data_update_R_geen1,5.csv", header = TRUE, sep = ";")
 
-nonCO2.upperbounds <- (nonCO2temp$uppertemp - nonCO2temp$lowertemp)/2
+# schaal Gt naar Tt
+nonCO2ssp$CumCO2..GtCO2. <- nonCO2ssp$CumCO2..GtCO2./1000
 
-# rechte lijn door upperbounds
-# nonCO2lijn <- lm(nonCO2.upperbounds ~ nonCO2temp$cumuCO2)
+fractie.F_nonCO2F_tot <- nonCO2ssp$F_nonCO2/nonCO2ssp$F_tot
+tempStijging_door_F_nonCO2 <- fractie.F_nonCO2F_tot*nonCO2ssp$Temp...C.
 
-#Deze gaat niet door 0!
-#plot(nonCO2.upperbounds~nonCO2temp$cumuCO2)
-#abline(nonCO2lijn)
-#coef(nonCO2lijn)
-# dan nemen we het gemiddelde van alle 6 lijnen door 0 en een upperbound
+# kijken hoe groot de bandbreedte van nonCO2 is:
+plot(tempStijging_door_F_nonCO2~nonCO2ssp$CumCO2..GtCO2., main = "Temperatuurstijging door F_nonCO2", xlab = "deltaCO2 (TtCO2)", ylab = "T (*C)")
+fitlijn <- lm(data = nonCO2ssp, tempStijging_door_F_nonCO2 ~ CumCO2..GtCO2.)
+abline(fitlijn)
+abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] - 0.2, col = "red")
+abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + 0.2, col = "red")
 
-# 6 ricos van 0 naar andere punten
-#nonCO2ricos <- (nonCO2.upperbounds)/nonCO2temp$cumuCO2
+# hij ligt steeds maximaal ongeveer 0.2 onder of bover de best-fit-lijn, dus
+afwijking_nonCO2 <- 0.2
 
-# maar: hij hoeft ook niet door 0 te gaan, sterker nog, hij gaat door de waarde van de ellips van 430-480:
-
-# We nemen aan: in 2010 is de afwijking door nonCO2 gelijk aan die in de ellips van 430-480
-nonCO22010max <- nonCO2.upperbounds[1]
-
-# 5 richtingscoefficienten van nonCO22010max naar andere punten: !!! niet correct! !!!
-#nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/nonCO2temp$cumuCO2
-
-# 5 richtingscoefficienten van nonCO22010max op cumuCO2 (2010-2100) = 0, en dus op cumuCO2 (2010-2100) = 1.339, naar andere punten
-cumuCO22010.rico <- 1.339
-nonCO2ricos <- (nonCO2.upperbounds - nonCO22010max)/(nonCO2temp$cumuCO2 - cumuCO22010.rico)
+# hellingshoek best-fit-lijn
+TCRnonCO2 <- coef(fitlijn)[2]
 
 
-# gemiddelde van 5 of 6 richtingscoefficienten:
-#TCRnonCO2max <- mean(nonCO2ricos)
-TCRnonCO2max2 <- mean(nonCO2ricos[-1])
-TCRnonCO2max <- mean(nonCO2ricos)
 
-# om te zorgen dat als nonCO22010 op een maximale waarde wordt gesampled, TCRnonCO2 ook maximaal is (om een scheve verdeling te vermijden)
-# nemen we een relatie aan tussen nonCO22010 en TCRnonCO2
-# nonCO22010 = a*TCRnonCO2 + b
-# we weten: nonCO22010 = 0 => TCRnonCO2 = 0
-# en: nonCO22010 = nonCO22010max => TCRnonCO2 = TCRnonCO2max
-# dus b = 0 en a = nonCO22010max/TCRnonCO2max
-
-a.nonCO2 <- nonCO22010max/TCRnonCO2max
-
-# afwijking door nonCO2 schommelt rond 0
-nonCO2mean <- 0
 
 #----------- Maak sample ----------------------
 # Zie ook http://r.789695.n4.nabble.com/Latin-Hypercube-Sampling-with-a-condition-td3563765.html
@@ -126,7 +103,7 @@ f.cumuvstemp.sample <- function(N, f.seed) {
   # transformeer random LHS naar LHS met goede parameters
   T2010 <- qnorm(x[,1], mean=T2010mean, sd=T2010std)
   TCRE <- qpert(x[,2], coef(fLL)[2], TCREmean, coef(fUL)[2], shape = 4)
-  nonCO2 <- qpert(x[,3], -1*TCRnonCO2max, nonCO2mean, TCRnonCO2max, shape = 4)
+  nonCO2 <- qpert(x[,3], -1*afwijking_nonCO2, 0, afwijking_nonCO2, shape = 4)
   
   
   # bundel in dataframe
@@ -137,8 +114,8 @@ f.cumuvstemp.sample <- function(N, f.seed) {
 
 #----------- Define model ---------------------
 
-oneRun <- function(Ttarget,T2010,TCRE,TCRnonCO2) {
-  return((Ttarget - T2010 + a.nonCO2*TCRnonCO2)/(TCRE + TCRnonCO2))
+oneRun <- function(Ttarget,T2010,TCRE,nonCO2) {
+  return((Ttarget - T2010 + nonCO2)/(TCRE + TCRnonCO2))
 }
 
 
@@ -160,10 +137,10 @@ f.cumuCO2result <- function(N, Ttarget, sample) {
 N <- 10000
 s.seed <- 21
 
-# functie die voor waarden van Ttarget tussen 1 en 4 de Correlation Coefficent uitrekent tussen de inputparameters en cumuCO2, de model uitkomst
 f.CCmatrix <- function(N,f.seed) {
   # initialisatie
-  CCmatrix <- NULL
+  CCmatrixP <- NULL
+  CCmatrixS <- NULL
   teller <- 0
   
   cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
@@ -171,16 +148,44 @@ f.CCmatrix <- function(N,f.seed) {
   for (i in seq(1, 4, by = 0.1)) {
     # print(i)
     sample_en_result <- f.cumuCO2result(N,i,cumuvstemp.sample)
-    CCmatrix.hulp <- cor(sample_en_result)[-1,]
-    CCmatrix <- rbind(CCmatrix, CCmatrix.hulp[-4,5])
+    # pearson CC:
+    CCmatrixP.hulp <- cor(sample_en_result)[-1,]
+    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-4,5])
+    # Spearman CC:
+    CCmatrixS.hulp <- cor(sample_en_result, method = "spearman")[-1,]
+    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-4,5])
     
     teller <- teller + 1
   }
-  rownames(CCmatrix) <- as.character(seq(1, 4, by = 0.1))
+  rownames(CCmatrixP) <- as.character(seq(1, 4, by = 0.1))
+  rownames(CCmatrixS) <- as.character(seq(1, 4, by = 0.1))
   
-  return(CCmatrix)
+  return(list(CCmatrixP,CCmatrixS))
 }
 
+
+# alleen Pearson:
+# functie die voor waarden van Ttarget tussen 1 en 4 de Correlation Coefficent uitrekent tussen de inputparameters en cumuCO2, de model uitkomst
+# f.CCmatrix <- function(N,f.seed) {
+#   # initialisatie
+#   CCmatrix <- NULL
+#   teller <- 0
+#   
+#   cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+#   
+#   for (i in seq(1, 4, by = 0.1)) {
+#     # print(i)
+#     sample_en_result <- f.cumuCO2result(N,i,cumuvstemp.sample)
+#     CCmatrix.hulp <- cor(sample_en_result)[-1,]
+#     CCmatrix <- rbind(CCmatrix, CCmatrix.hulp[-4,5])
+#     
+#     teller <- teller + 1
+#   }
+#   rownames(CCmatrix) <- as.character(seq(1, 4, by = 0.1))
+#   
+#   return(CCmatrix)
+# }
+# 
 
 
 

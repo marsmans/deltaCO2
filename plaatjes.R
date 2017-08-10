@@ -207,6 +207,7 @@ ggsave(paste("CC_GE_lin_stacked_absolute.png"),p)
 source("TCRE+nonCO2.R")
 source("TCRE+depnonCO2.R")
 source("TCRE+depnonCO2+SCC.R")
+source("TCRE+SSPnonCO2.R")
 
 # krijgt een CC matrix
 CCmatNOcosts <- f.CCmatrix(N,s.seed)
