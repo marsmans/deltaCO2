@@ -62,27 +62,35 @@ T2010std <- 0.065
 
 # data van excell sheet Detlef
 #nonCO2ssp <- read.csv(file = "./../Databases/ssp_data_update_naar_R.csv", header = TRUE, sep = ";")
-nonCO2ssp <- read.csv(file = "./../Databases/ssp_data_update_R_geen1,5.csv", header = TRUE, sep = ";")
+nonCO2ssp <- read.csv(file = "./../Databases/ssp_data_update_R_no1,5.csv", header = TRUE, sep = ";")
+alleen1.5 <- read.csv(file = "./../Databases/ssp_data_update_R_alleen1,5.csv", header = TRUE, sep = ";")
+
 
 # schaal Gt naar Tt
 nonCO2ssp$CumCO2..GtCO2. <- nonCO2ssp$CumCO2..GtCO2./1000
 
+alleen1.5$CumCO2..GtCO2. <- alleen1.5$CumCO2..GtCO2./1000
+
 fractie.F_nonCO2F_tot <- nonCO2ssp$F_nonCO2/nonCO2ssp$F_tot
 tempStijging_door_F_nonCO2 <- fractie.F_nonCO2F_tot*nonCO2ssp$Temp...C.
 
+fractie.alleen1.5 <- alleen1.5$F_nonCO2/alleen1.5$F_tot
+tempStijging.alleen1.5 <- fractie.alleen1.5*alleen1.5$Temp...C.
+
 # kijken hoe groot de bandbreedte van nonCO2 is:
 plot(tempStijging_door_F_nonCO2~nonCO2ssp$CumCO2..GtCO2., main = "Temperatuurstijging door F_nonCO2", xlab = "deltaCO2 (TtCO2)", ylab = "T (*C)")
+points(tempStijging.alleen1.5~alleen1.5$CumCO2..GtCO2., pch = 4, col = "blue" )
 fitlijn <- lm(data = nonCO2ssp, tempStijging_door_F_nonCO2 ~ CumCO2..GtCO2.)
 abline(fitlijn)
-abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] - 0.2, col = "red")
-abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + 0.2, col = "red")
 
 # hij ligt steeds maximaal ongeveer 0.2 onder of bover de best-fit-lijn, dus
 afwijking_nonCO2 <- 0.2
 
+abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] - afwijking_nonCO2, col = "red")
+abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + afwijking_nonCO2, col = "red")
+
 # hellingshoek best-fit-lijn
 TCRnonCO2 <- coef(fitlijn)[2]
-
 
 
 

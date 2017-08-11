@@ -120,10 +120,18 @@ hist.costs <- function(f.data) {
   hist(f.data$costs, breaks = "Scott", main = paste("Costs, Ttarget = ", f.data$f.Ttarget[1]) , xlab = "Costs")
 }
 
+hist.T2010 <- function(f.data) {
+  hist(f.data$T2010, breaks = "Scott", main="T2010 sample", xlab = "T2010")
+}
 
 hist.TCRE <- function(f.data) {
-  plot(f.data$TCRE, main=paste(f.data$f.Ttarget[1]), sub = "TCRE", xlab = "TCRE", ylab = "costs")
+  hist(f.data$TCRE, breaks = "Scott", main="TCRE sample", xlab = "TCRE")
 }
+
+hist.nonCO2 <- function(f.data) {
+  hist(f.data$nonCO2, breaks = "Scott", main= "nonCO2 sample", xlab = "nonCO2")
+}
+
 
 hist.slope <- function(f.data) {
   plot(f.data$costs.slope, main=paste(f.data$f.Ttarget[1]), sub = "costs.slope", xlab = "costs.slope", ylab = "costs")
