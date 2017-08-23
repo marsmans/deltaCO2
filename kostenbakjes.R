@@ -7,9 +7,9 @@
 
 
 # functie om het punt op de rechte lijn tussen twee punten uit te rekenen
-punt_rechteLijn <- function(x, x.links, x.rechts, y.onder, y.boven) {
-  q <- (y.boven - y.onder)/(x.rechts - x.links)
-  return(y.onder + (x - x.links)*q)
+punt_rechteLijn <- function(x, x.links, x.rechts, fx.links, fx.rechts) {
+  q <- (fx.rechts - fx.links)/(x.rechts - x.links)
+  return(fx.links + (x - x.links)*q)
 }
 
 #------------- Define bakjes ----------------
@@ -94,25 +94,70 @@ bakje650.720.min <- bakje650.720$percentGDP[1]
 bakje650.720.max <- bakje650.720$percentGDP[5]
 
 
-costs <- function(deltaCO2) {
+costs.oneRun <- function(deltaCO2) {
   # zit het onder bakje 430-480?
   if (deltaCO2 < bakje430.480.deltaCO2) {
-    kosten.mean <- "lager dan bakje 430-480"
+    return("lager dan bakje 430-480")
   # zit het tussen bakje 430-480 en 480-530?
   } else if (deltaCO2 >= bakje430.480.deltaCO2 & deltaCO2 < bakje480.530.deltaCO2) {
-    kosten.mean <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.min, bakje480.530.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.max, bakje480.530.max)
+    
   # zit het tussen bakje 480-530 en 530-580?
   } else if (deltaCO2 >= bakje480.530.deltaCO2 & deltaCO2 < bakje530.580.deltaCO2) {
-    kosten.mean <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.median, bakje530.580.median)
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.median, bakje530.580.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.min, bakje530.580.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.max, bakje530.580.max)
+    
   # zit het tussen bakje 530-580 en 580-650?
   } else if (deltaCO2 >= bakje530.580.deltaCO2 & deltaCO2 < bakje580.650.deltaCO2) {
-    kosten.mean <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
-  # zit het tussen bakje 580-650 en 650-720?
-  } else if (deltaCO2 >= bakje580.650.deltaCO2 & deltaCO2 < bakje650.720.deltaCO2) {
-    kosten.mean <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.median, bakje650.720.median)
-  } else 
-    kosten.mean <- "hoger dan bakje 650-720"
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.min, bakje580.650.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.max, bakje580.650.max)
     
-  return(kosten.mean)
+  # zit het tussen bakje 580-650 en 650-720?
+  } else if (deltaCO2 >= bakje580.650.deltaCO2 & deltaCO2 <= bakje650.720.deltaCO2) {
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.median, bakje650.720.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.min, bakje650.720.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.max, bakje650.720.max)
+    
+  } else  if (deltaCO2 > bakje650.720.deltaCO2) {
+    return("hoger dan bakje 650-720")
+  }
+  
+  trekking_kosten <- rpert(1, min = kosten.min, mode = kosten.median, max = kosten.max)
+   
+  return(trekking_kosten)
 }
 
+
+#-------------- run model -------------------------------
+
+model.costs <- function(deltaCO2) {
+  
+  # run model
+  costs <- mapply(costs.oneRun, deltaCO2)
+  
+  return(costs)
+}
+
+
+#-------------- maak data per Ttarget ------------------
+
+f.dataframe.deltaCO2 <- function(N,Ttarget,f.seed) {
+  # maak samples
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  # reken resultaten uit
+  sample_en_result <- f.cumuCO2result(N,Ttarget,cumuvstemp.sample)
+  return(sample_en_result)
+}
+
+f.dataframe.kosten <- function(N,Ttarget,f.seed) {
+  # maak samples en deltaCO2 resultaten
+  sample_en_result.deltaCO2 <- f.dataframe.deltaCO2(N,Ttarget,f.seed)
+  
+  kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+  
+  return(data.frame(sample_en_result.deltaCO2,kosten.result))
+}
