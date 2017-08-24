@@ -78,6 +78,20 @@ abline(a=nonCO22010max,b=TCRnonCO2max, col = "blue")
 abline(a=nonCO22010max,b=TCRnonCO2max2, col = "green")
 
 
+
+# plaatje van deltaCO2 vs kosten
+deltaCO2.results <- data.table(deltaCO2.results)
+costsIPCC.result <- data.table(costsIPCC.result)
+
+deltaCO2.results2 <-gather(deltaCO2.results,temp,cumuCO2,as.character(seq(1, 4, by = 0.1)))
+costsIPCC.result2 <- gather(costsIPCC.result,temp,kosten,as.character(seq(1, 4, by = 0.1)))
+
+par(mfrow=c(1,1))
+plot(costsIPCC.result2$kosten~deltaCO2.results2$cumuCO2,xlim=c(0,7), ylim=c(-1.2,4.5), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "abatement costs (%GDP)")
+
+
+
+
 #----------- histogrammen --------------
 
 N <- 10000
@@ -188,7 +202,7 @@ ggsave(paste("CC_GE_lin.png"),p)
 CC$value <- CC$value*CC$value
 
 p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','costs.slope')])
-p = p + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="fill")
+p = p + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="dodge")
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","costs.slope"="dark red","T2010"="black","TCRE"="green","nonCO2"="blue"))
 p = p + ggtitle("CC values of GE models with linear relation and fitted cost graph and bounded TCRE")
@@ -292,6 +306,44 @@ ggsave(paste("CC_T2010_TCRE.png"),q)
 
 
 
+
+#----------- plot van CC waarden met nonCO2 en kostenbakjes IPCC  --------------
+
+
+source("TCRE+SSPnonCO2.R")
+source("kostenbakjes.R")
+
+# krijgt een CC matrix
+s.seed <- 34562346
+CCmat <- f.costs.CCmatrix(N,s.seed)
+CCdata = data.table(CCmat[[1]])
+# maak er een 'werkbaarder' format van
+CC <-gather(CCdata,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result'))
+CC=data.table(CC)
+CC$temp <- as.character(seq(1.2, 3.4, by = 0.1))
+
+# plotting (probeersel) staven naast elkaar
+p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result')])
+p = p + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="dodge")
+p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
+p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","costs.slope"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue"))
+p = p + ggtitle("CC values of T2010, TCRE, nonCO2 and cumuCO2result for costs")
+p
+ggsave(paste("CC_GE_lin.png"),p)
+
+
+# plotting (probeersel) staven op elkaar
+# eerst alle getallen positief maken (door te kwadrateren)
+CC$value <- CC$value*CC$value
+
+q = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result')])
+q = q + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="fill")
+q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
+q = q + scale_fill_manual(values=c("CO22010"="grey","cumuCO2result"="dark blue","T2010"="black","TCRE"="green","nonCO2"="blue"))
+q = q + ggtitle("CC values of T2010, TCRE, nonCO2 and cumuCO2result for costs")
+q
+
+ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)
 
 
 

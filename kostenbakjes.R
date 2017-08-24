@@ -5,6 +5,8 @@
 #----------------------------------------------------
 
 
+source("TCRE+SSPnonCO2.R")
+
 
 # functie om het punt op de rechte lijn tussen twee punten uit te rekenen
 punt_rechteLijn <- function(x, x.links, x.rechts, fx.links, fx.rechts) {
@@ -97,7 +99,7 @@ bakje650.720.max <- bakje650.720$percentGDP[5]
 costs.oneRun <- function(deltaCO2) {
   # zit het onder bakje 430-480?
   if (deltaCO2 < bakje430.480.deltaCO2) {
-    return("lager dan bakje 430-480")
+    return(-1) #return("lager dan bakje 430.480")
   # zit het tussen bakje 430-480 en 480-530?
   } else if (deltaCO2 >= bakje430.480.deltaCO2 & deltaCO2 < bakje480.530.deltaCO2) {
     kosten.median <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)
@@ -123,9 +125,10 @@ costs.oneRun <- function(deltaCO2) {
     kosten.max <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.max, bakje650.720.max)
     
   } else  if (deltaCO2 > bakje650.720.deltaCO2) {
-    return("hoger dan bakje 650-720")
+    return(-1) #return("hoger dan bakje 650-720")
   }
   
+  grootte <- kosten.max - kosten.min
   trekking_kosten <- rpert(1, min = kosten.min, mode = kosten.median, max = kosten.max)
    
   return(trekking_kosten)
@@ -161,3 +164,54 @@ f.dataframe.kosten <- function(N,Ttarget,f.seed) {
   
   return(data.frame(sample_en_result.deltaCO2,kosten.result))
 }
+
+
+#-------------- CCmatrix -------------
+
+N <- 10000
+s.seed <- 21
+remove <- c(-1)
+
+f.costs.CCmatrix <- function(N,f.seed) {
+  # initialisatie
+  CCmatrixP <- NULL
+  CCmatrixS <- NULL
+  aantalMin1 <- vector(mode="numeric", length=0)
+  teller <- 0
+  
+  
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  
+  for (i in seq(1.2, 3.4, by = 0.1)) {
+    # print(i)
+    sample_en_result.deltaCO2 <- f.cumuCO2result(N,i,cumuvstemp.sample)
+    
+    kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+    
+    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,kosten.result)
+    
+    # verwijder resultaten buiten bakjes
+    waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
+    aantalMin1 <- c(aantalMin1, length(waarZitMin1))
+    
+    if (!identical(waarZitMin1, integer(0))) {
+    sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
+    }
+    
+    # pearson CC:
+    CCmatrixP.hulp <- cor(sample_en_result.kosten)[-1,]
+    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-5,6])
+    # Spearman CC:
+    CCmatrixS.hulp <- cor(sample_en_result.kosten, method = "spearman")[-1,]
+    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-5,6])
+    
+    teller <- teller + 1
+  }
+  rownames(CCmatrixP) <- as.character(seq(1.2, 3.4, by = 0.1))
+  rownames(CCmatrixS) <- as.character(seq(1.2, 3.4, by = 0.1))
+  
+  return(list(CCmatrixP,CCmatrixS))
+}
+
+# maak een matrix van CCwaarden
+#CCmat <- f.costs.CCmatrix(N,s.seed)

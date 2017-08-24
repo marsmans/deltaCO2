@@ -19,6 +19,7 @@ source("TCRE+nonCO2.R")
 source("TCRE+depnonCO2.R")
 source("TCRE+denonCO2skewed.R")
 source("TCRE+SSPnonCO2.R")
+source("kostenbakjes.R")
 
 #--------- maak data per Ttarget ----------------
 
@@ -91,6 +92,37 @@ hist(CO2.results1.523)
 hist(T2010.sample)
 hist(TCRE.sample)
 hist(nonCO2.sample)
+
+
+
+#-------------- resultaten ksotenbakjes ---------------------
+
+Ttarget <- 1.3
+sample_kosten <- f.dataframe.kosten(N,Ttarget,s.seed)
+
+remove <- c(-1)
+
+waarZitMin1 <- which(sample_kosten$kosten.result %in% remove)
+
+kosten.result_zonderbuitenbeentjes <- sample_kosten$kosten.result [! sample_kosten$kosten.result %in% remove]
+
+hist(kosten.result_zonderbuitenbeentjes, breaks = "Scott", main = Ttarget, xlab = "kosten (% baseline GDP)")
+
+
+
+#------------- bundel resultaten kosten ---------------------
+
+deltaCO2.results <- NULL
+costsIPCC.result <- NULL
+for (i in seq(1, 4, by = 0.1)) {
+  data <- f.dataframe.kosten(N,i,s.seed)
+  deltaCO2.results <- cbind(deltaCO2.results, data$cumuCO2result)
+  costsIPCC.result <- cbind(costsIPCC.result, data$kosten.result)
+}
+colnames(deltaCO2.results) <- as.character(seq(1, 4, by = 0.1))
+colnames(costsIPCC.result) <- as.character(seq(1, 4, by = 0.1))
+deltaCO2.results = data.table(deltaCO2.results)
+costsIPCC.result = data.table(costsIPCC.result)
 
 
 
