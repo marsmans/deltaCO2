@@ -314,20 +314,20 @@ source("TCRE+SSPnonCO2.R")
 source("kostenbakjes.R")
 
 # krijgt een CC matrix
-s.seed <- 34562346
+s.seed <- 21
 CCmat <- f.costs.CCmatrix(N,s.seed)
 CCdata = data.table(CCmat[[1]])
 # maak er een 'werkbaarder' format van
-CC <-gather(CCdata,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result'))
+CC <-gather(CCdata,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result','cs'))
 CC=data.table(CC)
 CC$temp <- as.character(seq(1.2, 3.4, by = 0.1))
 
 # plotting (probeersel) staven naast elkaar
-p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result')])
-p = p + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="dodge")
+p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','cs')])
+p = p + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
-p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","costs.slope"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue"))
-p = p + ggtitle("CC values of T2010, TCRE, nonCO2 and cumuCO2result for costs")
+p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue"))
+p = p + ggtitle("CC values of T2010, TCRE, nonCO2, cs and cumuCO2result for costs")
 p
 ggsave(paste("CC_GE_lin.png"),p)
 
@@ -336,11 +336,11 @@ ggsave(paste("CC_GE_lin.png"),p)
 # eerst alle getallen positief maken (door te kwadrateren)
 CC$value <- CC$value*CC$value
 
-q = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result')])
+q = ggplot(CC[variable %in% c('cumuCO2result','cs')]) # 'cumuCO2result' # c('T2010','TCRE','nonCO2','cs')])
 q = q + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="fill")
 q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
-q = q + scale_fill_manual(values=c("CO22010"="grey","cumuCO2result"="dark blue","T2010"="black","TCRE"="green","nonCO2"="blue"))
-q = q + ggtitle("CC values of T2010, TCRE, nonCO2 and cumuCO2result for costs")
+q = q + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green","nonCO2"="blue"))
+q = q + ggtitle("CC values of T2010, TCRE, nonCO2, cs and cumuCO2result for costs")
 q
 
 ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)

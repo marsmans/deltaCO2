@@ -162,7 +162,9 @@ f.dataframe.kosten <- function(N,Ttarget,f.seed) {
   
   kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
   
-  return(data.frame(sample_en_result.deltaCO2,kosten.result))
+  cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+  
+  return(data.frame(sample_en_result.deltaCO2,cs,kosten.result))
 }
 
 
@@ -187,8 +189,10 @@ f.costs.CCmatrix <- function(N,f.seed) {
     sample_en_result.deltaCO2 <- f.cumuCO2result(N,i,cumuvstemp.sample)
     
     kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+    # herleid costsensitivity
+    cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
     
-    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,kosten.result)
+    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
     
     # verwijder resultaten buiten bakjes
     waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
@@ -200,10 +204,10 @@ f.costs.CCmatrix <- function(N,f.seed) {
     
     # pearson CC:
     CCmatrixP.hulp <- cor(sample_en_result.kosten)[-1,]
-    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-5,6])
+    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-6,7])
     # Spearman CC:
     CCmatrixS.hulp <- cor(sample_en_result.kosten, method = "spearman")[-1,]
-    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-5,6])
+    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-6,7])
     
     teller <- teller + 1
   }

@@ -1,6 +1,6 @@
 #----------------------------------------------------
 #
-# Model met bakjes, data van SSP
+# Model met bakjes
 #
 #----------------------------------------------------
 
@@ -14,43 +14,15 @@ punt_rechteLijn <- function(x, x.links, x.rechts, fx.links, fx.rechts) {
   return(fx.links + (x - x.links)*q)
 }
 
+# functie die de rc geeft van de rechte lijn tussen twee punten
+rc <- function(x1,x2,y1,y2) {
+  return((y2-y1)/(x2-x1))
+}
 
-#---------------- data SSP inlezen ----------------------
-
-kostenSSP <- read.csv(file = "./../Databases/kostenSSP.csv", header = TRUE, sep = ";")
-kostenSSPno0 <- read.csv(file = "./../Databases/kostenSSPno0.csv", header = TRUE, sep = ";")
-
-
-# schalen naar Tt CO2
-kostenSSP$Cum.CO2 <- kostenSSP$Cum.CO2/1000
-kostenSSPno0$Cum.CO2 <- kostenSSPno0$Cum.CO2/1000
-
-#plot
-plot(kostenSSP$Cost.Estimate..ktrillion.~kostenSSP$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
-points(kostenSSP$MAC.Costs..ktrillion.~kostenSSP$Cum.CO2, pch = 17, col = "green" )
-points(kostenSSP$Consumption.Loss..ktrillion.~kostenSSP$Cum.CO2, pch = 18, col = "red" )
-
-#plot
-plot(kostenSSPno0$Cost.Estimate..ktrillion.~kostenSSPno0$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
-points(kostenSSPno0$MAC.Costs..ktrillion.~kostenSSPno0$Cum.CO2, pch = 17, col = "green" )
-points(kostenSSPno0$Consumption.Loss..ktrillion.~kostenSSPno0$Cum.CO2, pch = 18, col = "red" )
-
-
-# delen door waarde in deltaCO2 = 1.503707,
-# 1.503707 = 100%
-
-index.CostEstimate <- kostenSSPno0$Cost.Estimate..ktrillion.[16]
-index.ConsumptionLoss <- kostenSSPno0$Consumption.Loss..ktrillion.[16]
-
-kostenSSPno0.indexed <- kostenSSPno0
-kostenSSPno0.indexed$Cost.Estimate..ktrillion. <- kostenSSPno0.indexed$Cost.Estimate..ktrillion./index.CostEstimate
-kostenSSPno0.indexed$Consumption.Loss..ktrillion. <- kostenSSPno0.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
-
-
-# plot CostEstimate en ConsumptionLoss, MAC doet niet mee
-plot(kostenSSPno0.indexed$Cost.Estimate..ktrillion.~kostenSSPno0.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
-points(kostenSSPno0.indexed$Consumption.Loss..ktrillion.~kostenSSPno0.indexed$Cum.CO2, pch = 18, col = "red" )
-
+# functie die de intercept geeft van de rechte lijn geeft gegeven de rc en een punt op de lijn
+b <- function(x,y,rc) {
+  return(y-(rc*x))
+}
 
 
 #------------- Define bakjes ----------------
@@ -135,15 +107,59 @@ bakje650.720.min <- bakje650.720$percentGDP[1]
 bakje650.720.max <- bakje650.720$percentGDP[5]
 
 
+
+# rc tussen de bakjes
+# max rc
+rcmax.bakje430.480_480.530 <- rc(bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.max, bakje480.530.max)
+rcmax.bakje480.530_530.580 <- rc(bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.max, bakje530.580.max)
+rcmax.bakje530.580_580.650 <- rc(bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.max, bakje580.650.max)
+rcmax.bakje580.650_650.720 <- rc(bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.max, bakje650.720.max)
+
+# gem rc
+rcmodus.bakje430.480_480.530 <- rc(bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)
+rcmodus.bakje480.530_530.580 <- rc(bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.median, bakje530.580.median)
+rcmodus.bakje530.580_580.650 <- rc(bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
+rcmodus.bakje580.650_650.720 <- rc(bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.median, bakje650.720.median)
+
+# min rc
+rcmin.bakje430.480_480.530 <- rc(bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.min, bakje480.530.min)
+rcmin.bakje480.530_530.580 <- rc(bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.min, bakje530.580.min)
+rcmin.bakje530.580_580.650 <- rc(bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.min, bakje580.650.min)
+rcmin.bakje580.650_650.720 <- rc(bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.min, bakje650.720.min)
+
+
+# min en max intercept
+# min
+b.min.bakje430.480_480.530 <- b(bakje430.480.deltaCO2,bakje430.480.min,rcmin.bakje430.480_480.530)
+b.min.bakje480.530_530.580 <- b(bakje480.530.deltaCO2,bakje480.530.min,rcmin.bakje480.530_530.580)
+b.min.bakje530.580_580.650 <- b(bakje530.580.deltaCO2,bakje530.580.min,rcmin.bakje530.580_580.650)
+b.min.bakje580.650_650.720 <- b(bakje580.650.deltaCO2,bakje580.650.min,rcmin.bakje580.650_650.720)
+
+# max
+b.max.bakje430.480_480.530 <- b(bakje430.480.deltaCO2,bakje430.480.max,rcmax.bakje430.480_480.530)
+b.max.bakje480.530_530.580 <- b(bakje480.530.deltaCO2,bakje480.530.max,rcmax.bakje480.530_530.580)
+b.max.bakje530.580_580.650 <- b(bakje530.580.deltaCO2,bakje530.580.max,rcmax.bakje530.580_580.650)
+b.max.bakje580.650_650.720 <- b(bakje580.650.deltaCO2,bakje580.650.max,rcmax.bakje580.650_650.720)
+
+
+
+
 costs.oneRun <- function(deltaCO2) {
   # zit het onder bakje 430-480?
   if (deltaCO2 < bakje430.480.deltaCO2) {
-    return(-1) #return("lager dan bakje 430.480")
+    return(c(-1,-1)) #return("lager dan bakje 430.480")
     # zit het tussen bakje 430-480 en 480-530?
   } else if (deltaCO2 >= bakje430.480.deltaCO2 & deltaCO2 < bakje480.530.deltaCO2) {
     kosten.median <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)
     kosten.min <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.min, bakje480.530.min)
     kosten.max <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.max, bakje480.530.max)
+    
+    rc.modus <- rcmodus.bakje430.480_480.530
+    rc.max <- rcmax.bakje430.480_480.530
+    rc.min <- rcmin.bakje430.480_480.530
+    
+    b.max <- b.max.bakje430.480_480.530
+    b.min <- b.min.bakje430.480_480.530
     
     # zit het tussen bakje 480-530 en 530-580?
   } else if (deltaCO2 >= bakje480.530.deltaCO2 & deltaCO2 < bakje530.580.deltaCO2) {
@@ -151,11 +167,25 @@ costs.oneRun <- function(deltaCO2) {
     kosten.min <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.min, bakje530.580.min)
     kosten.max <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.max, bakje530.580.max)
     
+    rc.modus <- rcmodus.bakje480.530_530.580
+    rc.max <- rcmax.bakje480.530_530.580
+    rc.min <- rcmin.bakje480.530_530.580
+    
+    b.max <- b.max.bakje480.530_530.580
+    b.min <- b.min.bakje480.530_530.580
+    
     # zit het tussen bakje 530-580 en 580-650?
   } else if (deltaCO2 >= bakje530.580.deltaCO2 & deltaCO2 < bakje580.650.deltaCO2) {
     kosten.median <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
     kosten.min <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.min, bakje580.650.min)
     kosten.max <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.max, bakje580.650.max)
+    
+    rc.modus <- rcmodus.bakje530.580_580.650
+    rc.max <- rcmax.bakje530.580_580.650
+    rc.min <- rcmin.bakje530.580_580.650
+    
+    b.max <- b.max.bakje530.580_580.650
+    b.min <- b.min.bakje530.580_580.650
     
     # zit het tussen bakje 580-650 en 650-720?
   } else if (deltaCO2 >= bakje580.650.deltaCO2 & deltaCO2 <= bakje650.720.deltaCO2) {
@@ -163,14 +193,34 @@ costs.oneRun <- function(deltaCO2) {
     kosten.min <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.min, bakje650.720.min)
     kosten.max <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.max, bakje650.720.max)
     
+    rc.modus <- rcmodus.bakje580.650_650.720
+    rc.max <- rcmax.bakje580.650_650.720
+    rc.min <- rcmin.bakje580.650_650.720
+    
+    b.max <- b.max.bakje580.650_650.720
+    b.min <- b.min.bakje580.650_650.720
+    
   } else  if (deltaCO2 > bakje650.720.deltaCO2) {
-    return(-1) #return("hoger dan bakje 650-720")
+    return(c(-1,-1)) #return("hoger dan bakje 650-720")
   }
   
   grootte <- kosten.max - kosten.min
   trekking_kosten <- rpert(1, min = kosten.min, mode = kosten.median, max = kosten.max)
   
-  return(trekking_kosten)
+  
+  cs <- rpert(1, min = rc.min, mode = rc.modus, max = rc.max, shape = 4)
+  
+  verhouding <- (rc.max - cs)/(rc.max-rc.min)
+  
+  intercept <- b.max - verhouding*(b.max-b.min)
+  
+  kost <- deltaCO2*cs + intercept
+  
+  #print(verhouding)
+  #print(intercept)
+  #print(kost)
+  
+  return(c(cs,kost))
 }
 
 
@@ -179,9 +229,16 @@ costs.oneRun <- function(deltaCO2) {
 model.costs <- function(deltaCO2) {
   
   # run model
-  costs <- mapply(costs.oneRun, deltaCO2)
+  #cs_en_costs <- mapply(costs.oneRun, deltaCO2)
   
-  return(costs)
+  # initize
+  cs_en_costs <- data.frame('cs'= 1:N, 'kosten.result' = 1:N)
+  
+  for (i in 1:N) {
+    cs_en_costs[i,] <- costs.oneRun(deltaCO2[i])
+  }
+  
+  return(data.frame(cs_en_costs))
 }
 
 
@@ -201,7 +258,7 @@ f.dataframe.kosten <- function(N,Ttarget,f.seed) {
   
   kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
   
-  
+  #cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
   
   return(data.frame(sample_en_result.deltaCO2,kosten.result))
 }
@@ -241,10 +298,10 @@ f.costs.CCmatrix <- function(N,f.seed) {
     
     # pearson CC:
     CCmatrixP.hulp <- cor(sample_en_result.kosten)[-1,]
-    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-5,6])
+    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-6,7])
     # Spearman CC:
     CCmatrixS.hulp <- cor(sample_en_result.kosten, method = "spearman")[-1,]
-    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-5,6])
+    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-6,7])
     
     teller <- teller + 1
   }
