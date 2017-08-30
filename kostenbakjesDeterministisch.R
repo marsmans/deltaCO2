@@ -118,7 +118,7 @@ rcmax.bakje580.650_650.720 <- rc(bakje580.650.deltaCO2, bakje650.720.deltaCO2, b
 # gem rc
 rcmodus.bakje430.480_480.530 <- rc(bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)
 rcmodus.bakje480.530_530.580 <- rc(bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.median, bakje530.580.median)
-rcmodus.bakje530.580_580.650 <- rc(bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
+rcmodus.bakje530.580_580.650 <- -0.45 # rc(bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
 rcmodus.bakje580.650_650.720 <- rc(bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.median, bakje650.720.median)
 
 # min rc

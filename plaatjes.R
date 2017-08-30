@@ -156,6 +156,11 @@ hist.p <- function(f.data) {
 }
 
 
+hist.cs <- function(f.data) {
+  plot(f.data$cs, main=paste(f.data$f.Ttarget[1]), sub = "cs", xlab = "cs", ylab = "costs")
+}
+
+
 
 
 # scatterplots maken van een dataframe
@@ -321,16 +326,16 @@ CCdata = data.table(CCmat[[1]])
 # maak er een 'werkbaarder' format van
 CC <-gather(CCdata,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result','cs'))
 CC=data.table(CC)
-CC$temp <- as.character(seq(1.2, 3.4, by = 0.1))
+CC$Ttarget <- as.character(seq(1.2, 3.4, by = 0.1))
 
 # plotting (probeersel) staven naast elkaar
 p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','cs')])
-p = p + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
+p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue"))
 p = p + ggtitle("CC values for costs")
 p
-ggsave(paste("CC_GE_lin.png"),p)
+# ggsave(paste("CC_GE_lin.png"),p)
 
 
 # plotting (probeersel) staven op elkaar
@@ -338,13 +343,13 @@ ggsave(paste("CC_GE_lin.png"),p)
 CC$value <- CC$value*CC$value
 
 q = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cs')]) # c('cumuCO2result','cs')]) # 'cumuCO2result' 
-q = q + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="fill")
+q = q + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="fill")
 q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
 q = q + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green","nonCO2"="blue"))
 q = q + ggtitle("CC values costs")
 q
 
-ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)
+# ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)
 
 
 

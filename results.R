@@ -137,7 +137,57 @@ f.dataframekosten <- function(N,Ttarget,f.seed) {
   return(sample_en_result.kosten)
 }
 
+#----- kostenbakjes ---
+
+source("kostenbakjes.R")
+
+f.dataframekosten <- function(N,Ttarget,f.seed) {
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  
+  sample_en_result.deltaCO2 <- f.cumuCO2result(N,Ttarget,cumuvstemp.sample)
+  
+  kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+  
+  # herleid costsensitivity
+  cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+  
+  sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
+  
+  # verwijder resultaten buiten bakjes
+  remove <- c(-1)
+  aantalMin1 <- vector(mode="numeric", length=0)
+  waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
+  aantalMin1 <- c(aantalMin1, length(waarZitMin1))
+  
+  if (!identical(waarZitMin1, integer(0))) {
+    sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
+  }
+  
+  return(sample_en_result.kosten)
+}
+
+
 #------------- bundel resultaten kosten ---------------------
+
+deltaCO2 <- NULL
+cs <- NULL
+costsIPCC <- NULL
+for (i in seq(1, 4, by = 0.1)) {
+  data <- f.dataframekosten(N,i,s.seed)
+  print(length(data$cumuCO2result))
+  print(length(data$cs))
+  deltaCO2 <- cbind(deltaCO2, data$cumuCO2result)
+  cs <- cbind(cs, data$cs)
+  costsIPCC <- cbind(costsIPCC, data$kosten.result)
+}
+colnames(deltaCO2) <- as.character(seq(1, 3.5, by = 0.1))
+colnames(cs) <- as.character(seq(1, 3.5, by = 0.1))
+colnames(costsIPCC) <- as.character(seq(1, 3.5, by = 0.1))
+deltaCO2 = data.table(deltaCO2)
+cs = data.table(cs)
+costsIPCC = data.table(costsIPCC)
+
+
 
 deltaCO2.results <- NULL
 costsIPCC.result <- NULL
