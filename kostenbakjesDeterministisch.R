@@ -62,7 +62,7 @@ bakje650.720 <- read.csv(file = "./../Databases/650-720ppmCO2eq.txt", header = T
 
 
 # mean
-bakje430.480.median <- bakje430.480$percentGDP[3]
+bakje430.480.median <- 1.39487 # bakje430.480$percentGDP[3] # 1.39487 # 
 bakje480.530.median <- bakje480.530$percentGDP[3]
 bakje530.580.median <- bakje530.580$percentGDP[3]
 bakje580.650.median <- bakje580.650$percentGDP[3]
@@ -92,7 +92,7 @@ bakje650.720.std <- (bakje650.720std75 + bakje650.720std25)/2
 
 # minimum- en maximumwaarde van bakjes
 bakje430.480.min <- bakje430.480$percentGDP[1]
-bakje430.480.max <- bakje430.480$percentGDP[5]
+bakje430.480.max <- 6.15821 #bakje430.480$percentGDP[5] # 6.15821 # 
 
 bakje480.530.min <- bakje480.530$percentGDP[1]
 bakje480.530.max <- bakje480.530$percentGDP[5]
@@ -147,7 +147,19 @@ b.max.bakje580.650_650.720 <- b(bakje580.650.deltaCO2,bakje580.650.max,rcmax.bak
 costs.oneRun <- function(deltaCO2) {
   # zit het onder bakje 430-480?
   if (deltaCO2 < bakje430.480.deltaCO2) {
-    return(c(-1,-1)) #return("lager dan bakje 430.480")
+    # return(c(-1,-1)) #return("lager dan bakje 430.480")
+    
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.min, bakje480.530.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.max, bakje480.530.max)
+    
+    rc.modus <- rcmodus.bakje430.480_480.530
+    rc.max <- rcmax.bakje430.480_480.530
+    rc.min <- rcmin.bakje430.480_480.530
+    
+    b.max <- b.max.bakje430.480_480.530
+    b.min <- b.min.bakje430.480_480.530
+    
     # zit het tussen bakje 430-480 en 480-530?
   } else if (deltaCO2 >= bakje430.480.deltaCO2 & deltaCO2 < bakje480.530.deltaCO2) {
     kosten.median <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)

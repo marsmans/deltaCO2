@@ -20,6 +20,7 @@ source("TCRE+depnonCO2.R")
 source("TCRE+denonCO2skewed.R")
 source("TCRE+SSPnonCO2.R")
 source("kostenbakjes.R")
+source("kostenbakjesDeterministisch.R")
 
 #--------- maak data per Ttarget ----------------
 
@@ -37,6 +38,7 @@ data2010 <- f.dataframe(N,T2010mean,s.seed)
 data1 <- f.dataframe(N,1,s.seed)
 data1.5 <- f.dataframe(N,1.5,s.seed)
 data2 <- f.dataframe(N,2,s.seed)
+data2.4 <- f.dataframe(N,2.4,s.seed)
 data2.5 <- f.dataframe(N,2.5,s.seed)
 data3 <- f.dataframe(N,3,s.seed)
 data4 <- f.dataframe(N,4,s.seed)
@@ -95,7 +97,7 @@ hist(nonCO2.sample)
 
 
 
-#-------------- resultaten ksotenbakjes ---------------------
+#-------------- resultaten kostenbakjes ---------------------
 
 Ttarget <- 1.3
 sample_kosten <- f.dataframe.kosten(N,Ttarget,s.seed)
@@ -109,6 +111,31 @@ kosten.result_zonderbuitenbeentjes <- sample_kosten$kosten.result [! sample_kost
 hist(kosten.result_zonderbuitenbeentjes, breaks = "Scott", main = Ttarget, xlab = "kosten (% baseline GDP)")
 
 
+#------------- resultaten kostenbakjes lineair tussen bakjes -----
+
+source("kostenbakjesDeterministisch.R")
+
+f.dataframekosten <- function(N,Ttarget,f.seed) {
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  
+  sample_en_result.deltaCO2 <- f.cumuCO2result(N,Ttarget,cumuvstemp.sample)
+  
+  kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+  
+  sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,kosten.result)
+  
+  # verwijder resultaten buiten bakjes
+  remove <- c(-1)
+  aantalMin1 <- vector(mode="numeric", length=0)
+  waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
+  aantalMin1 <- c(aantalMin1, length(waarZitMin1))
+  
+  if (!identical(waarZitMin1, integer(0))) {
+    sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
+  }
+  
+  return(sample_en_result.kosten)
+}
 
 #------------- bundel resultaten kosten ---------------------
 
