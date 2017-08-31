@@ -333,7 +333,7 @@ p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','cs')])
 p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue"))
-p = p + ggtitle("CC values for costs")
+p = p + ggtitle("CC values for costs, extended boxes, lin between boxes")
 p
 # ggsave(paste("CC_GE_lin.png"),p)
 
@@ -346,7 +346,7 @@ q = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cs')]) # c('cumuCO2result
 q = q + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="fill")
 q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
 q = q + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green","nonCO2"="blue"))
-q = q + ggtitle("CC values costs")
+q = q + ggtitle("CC values costs, lin between boxes")
 q
 
 # ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)
