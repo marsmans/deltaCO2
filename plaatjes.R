@@ -90,6 +90,42 @@ par(mfrow=c(1,1))
 plot(costsIPCC.result2$kosten~deltaCO2.results2$cumuCO2,xlim=c(0,7), ylim=c(-1.2,4.5), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "abatement costs (%GDP)")
 
 
+# nieuwe versie
+# plaatje van deltaCO2 vs kosten
+deltaCO2 <- data.table(deltaCO2)
+costsIPCC <- data.table(costsIPCC)
+
+deltaCO22 <-gather(deltaCO2,temp,cumuCO2,as.character(seq(1, 4, by = 0.1)))
+costsIPCC2 <- gather(costsIPCC,temp,kosten,as.character(seq(1, 4, by = 0.1)))
+
+deltaCO2CostsIPCC2 <- cbind(deltaCO22, kosten = costsIPCC2$kosten)
+
+par(mfrow=c(1,1))
+plot(costsIPCC2$kosten~deltaCO22$cumuCO2,xlim=c(-1,7), ylim=c(-0.5,12), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "abatement costs (%GDP)")
+
+p = ggplot(deltaCO2CostsIPCC2,aes(x=cumuCO2,y=kosten))
+p = p + geom_point(alpha = 0.03)
+p = p + theme_bw()
+p = p + labs(x = "deltaCO2", y = "Costs") 
+p
+
+
+# plaatje van Ttarget vs kosten
+deltaCO2 <- data.table(deltaCO2)
+costsIPCC <- data.table(costsIPCC)
+
+deltaCO22 <-gather(deltaCO2,temp,cumuCO2,as.character(seq(1, 4, by = 0.1)))
+costsIPCC2 <- gather(costsIPCC,temp,kosten,as.character(seq(1, 4, by = 0.1)))
+
+par(mfrow=c(1,1))
+plot(costsIPCC2$kosten~costsIPCC2$temp,xlim=c(-1,7), ylim=c(-0.5,4.5), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "abatement costs (%GDP)")
+
+p = ggplot(costsIPCC2,aes(x=temp,y=kosten))
+p = p + geom_point(alpha = 0.03)
+p = p + geom_smooth(method = lm)
+p = p + theme_bw()
+p = p + labs(x = "Ttarget", y = "Costs") 
+p
 
 
 #----------- histogrammen --------------

@@ -18,12 +18,12 @@ punt_rechteLijn <- function(x, x.links, x.rechts, fx.links, fx.rechts) {
 #---------------- data SSP inlezen ----------------------
 
 kostenSSP <- read.csv(file = "./../Databases/kostenSSP.csv", header = TRUE, sep = ";")
-kostenSSPno0 <- read.csv(file = "./../Databases/kostenSSPno0.csv", header = TRUE, sep = ";")
+#kostenSSPno0 <- read.csv(file = "./../Databases/kostenSSPno0.csv", header = TRUE, sep = ";")
 
 
 # schalen naar Tt CO2
 kostenSSP$Cum.CO2 <- kostenSSP$Cum.CO2/1000
-kostenSSPno0$Cum.CO2 <- kostenSSPno0$Cum.CO2/1000
+#kostenSSPno0$Cum.CO2 <- kostenSSPno0$Cum.CO2/1000
 
 #plot
 plot(kostenSSP$Cost.Estimate..ktrillion.~kostenSSP$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
@@ -31,26 +31,55 @@ points(kostenSSP$MAC.Costs..ktrillion.~kostenSSP$Cum.CO2, pch = 17, col = "green
 points(kostenSSP$Consumption.Loss..ktrillion.~kostenSSP$Cum.CO2, pch = 18, col = "red" )
 
 #plot
-plot(kostenSSPno0$Cost.Estimate..ktrillion.~kostenSSPno0$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
-points(kostenSSPno0$MAC.Costs..ktrillion.~kostenSSPno0$Cum.CO2, pch = 17, col = "green" )
-points(kostenSSPno0$Consumption.Loss..ktrillion.~kostenSSPno0$Cum.CO2, pch = 18, col = "red" )
+#plot(kostenSSPno0$Cost.Estimate..ktrillion.~kostenSSPno0$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
+#points(kostenSSPno0$MAC.Costs..ktrillion.~kostenSSPno0$Cum.CO2, pch = 17, col = "green" )
+#points(kostenSSPno0$Consumption.Loss..ktrillion.~kostenSSPno0$Cum.CO2, pch = 18, col = "red" )
 
 
-# delen door waarde in deltaCO2 = 1.503707,
-# 1.503707 = 100%
-
-index.CostEstimate <- kostenSSPno0$Cost.Estimate..ktrillion.[16]
-index.ConsumptionLoss <- kostenSSPno0$Consumption.Loss..ktrillion.[16]
-
-kostenSSPno0.indexed <- kostenSSPno0
-kostenSSPno0.indexed$Cost.Estimate..ktrillion. <- kostenSSPno0.indexed$Cost.Estimate..ktrillion./index.CostEstimate
-kostenSSPno0.indexed$Consumption.Loss..ktrillion. <- kostenSSPno0.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
+# delen door waarde in deltaCO2 = 1.503707, !!!!
+# neem voor de index een gemiddelde/modus/mediaan van een bakje!
+###### 1.503707 = 100%
+#
+#index.CostEstimate <- kostenSSPno0$Cost.Estimate..ktrillion.[16]
+#index.ConsumptionLoss <- kostenSSPno0$Consumption.Loss..ktrillion.[16]
+#
+#kostenSSPno0.indexed <- kostenSSPno0
+#kostenSSPno0.indexed$Cost.Estimate..ktrillion. <- kostenSSPno0.indexed$Cost.Estimate..ktrillion./index.CostEstimate
+#kostenSSPno0.indexed$Consumption.Loss..ktrillion. <- kostenSSPno0.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
 
 
 # plot CostEstimate en ConsumptionLoss, MAC doet niet mee
-plot(kostenSSPno0.indexed$Cost.Estimate..ktrillion.~kostenSSPno0.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
-points(kostenSSPno0.indexed$Consumption.Loss..ktrillion.~kostenSSPno0.indexed$Cum.CO2, pch = 18, col = "red" )
+#plot(kostenSSPno0.indexed$Cost.Estimate..ktrillion.~kostenSSPno0.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
+#points(kostenSSPno0.indexed$Consumption.Loss..ktrillion.~kostenSSPno0.indexed$Cum.CO2, pch = 18, col = "red" )
 
+
+#--------------- Deel in in bakjes ------------------------
+
+bakje1 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
+bakje2 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
+bakje3 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
+bakje4 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
+bakje5 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
+
+for (i in 1:length(kostenSSP$Cum.CO2)) {
+  if (kostenSSP$Cum.CO2[i] >= 0.534 & kostenSSP$Cum.CO2[i] < 0.852) {
+    bakje1 <- rbind(bakje1,kostenSSP[i,])
+    
+  } else if (kostenSSP$Cum.CO2[i] >= 1.126 & kostenSSP$Cum.CO2[i] < 1.573) {
+    bakje2 <- rbind(bakje2,kostenSSP[i,])
+    
+  } else if (kostenSSP$Cum.CO2[i] >= 1.780 & kostenSSP$Cum.CO2[i] < 2.4) {
+    bakje3 <- rbind(bakje3,kostenSSP[i,])
+    
+  } else if (kostenSSP$Cum.CO2[i] >= 2.63 & kostenSSP$Cum.CO2[i] < 3.21) {
+    bakje4 <- rbind(bakje4,kostenSSP[i,])
+    
+  } else if (kostenSSP$Cum.CO2[i] >= 3.81 & kostenSSP$Cum.CO2[i] < 4.56) {
+    bakje5 <- rbind(bakje5,kostenSSP[i,])
+  }
+}
+  
+# indexed opnieuw
 
 
 #------------- Define bakjes ----------------
