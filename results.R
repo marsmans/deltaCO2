@@ -21,6 +21,7 @@ source("TCRE+denonCO2skewed.R")
 source("TCRE+SSPnonCO2.R")
 source("kostenbakjes.R")
 source("kostenbakjesDeterministisch.R")
+source("kostenSSP.R")
 
 #--------- maak data per Ttarget ----------------
 
@@ -154,14 +155,14 @@ f.dataframekosten <- function(N,Ttarget,f.seed) {
   sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
   
   # verwijder resultaten buiten bakjes
-  remove <- c(-1)
-  aantalMin1 <- vector(mode="numeric", length=0)
-  waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
-  aantalMin1 <- c(aantalMin1, length(waarZitMin1))
+  #remove <- c(-1)
+  #aantalMin1 <- vector(mode="numeric", length=0)
+  #waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
+  #aantalMin1 <- c(aantalMin1, length(waarZitMin1))
   
-  if (!identical(waarZitMin1, integer(0))) {
-    sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
-  }
+  #if (!identical(waarZitMin1, integer(0))) {
+  #  sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
+  #}
   
   return(sample_en_result.kosten)
 }

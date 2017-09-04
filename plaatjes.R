@@ -264,7 +264,7 @@ ggsave(paste("CC_GE_lin_stacked_absolute.png"),p)
 
 #----------- plot van CC waarden (lin) zonder costs.slope --------------
 
-
+#!!!!!!!!!!!!!- deze moeten we hebben voor cc tussen deltaCO2 en input
 # MET NONCO2
 
 source("TCRE+nonCO2.R")
@@ -348,12 +348,15 @@ ggsave(paste("CC_T2010_TCRE.png"),q)
 
 
 
-#----------- plot van CC waarden met nonCO2 en kostenbakjes IPCC  --------------
+#----------- plot van CC waarden met nonCO2 en kostenbakjes IPCC en kostenbakjes SSP --------------
 
 
 source("TCRE+SSPnonCO2.R")
+
 source("kostenbakjes.R")
 source("kostenbakjesDeterministisch.R")
+
+source("kostenSSP.R")
 
 # krijgt een CC matrix
 s.seed <- 21

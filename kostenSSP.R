@@ -60,6 +60,7 @@ bakje2 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double()
 bakje3 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
 bakje4 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
 bakje5 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
+bakje6 <- data.frame(deltaCO2=double(), CostEstimate=double(), MACCosts=double(), ConsumptionLoss=double(), stringsAsFactors=FALSE)
 
 for (i in 1:length(kostenSSP$Cum.CO2)) {
   if (kostenSSP$Cum.CO2[i] >= 0.534 & kostenSSP$Cum.CO2[i] < 0.852) {
@@ -68,132 +69,212 @@ for (i in 1:length(kostenSSP$Cum.CO2)) {
   } else if (kostenSSP$Cum.CO2[i] >= 1.126 & kostenSSP$Cum.CO2[i] < 1.573) {
     bakje2 <- rbind(bakje2,kostenSSP[i,])
     
-  } else if (kostenSSP$Cum.CO2[i] >= 1.780 & kostenSSP$Cum.CO2[i] < 2.4) {
+  } else if (kostenSSP$Cum.CO2[i] >= 1.780 & kostenSSP$Cum.CO2[i] < 2.09) {
     bakje3 <- rbind(bakje3,kostenSSP[i,])
     
-  } else if (kostenSSP$Cum.CO2[i] >= 2.63 & kostenSSP$Cum.CO2[i] < 3.21) {
+  } else if (kostenSSP$Cum.CO2[i] >= 2.09 & kostenSSP$Cum.CO2[i] < 2.4) {
     bakje4 <- rbind(bakje4,kostenSSP[i,])
     
-  } else if (kostenSSP$Cum.CO2[i] >= 3.81 & kostenSSP$Cum.CO2[i] < 4.56) {
+  } else if (kostenSSP$Cum.CO2[i] >= 2.63 & kostenSSP$Cum.CO2[i] < 3.21) {
     bakje5 <- rbind(bakje5,kostenSSP[i,])
+    
+  } else if (kostenSSP$Cum.CO2[i] >= 3.81 & kostenSSP$Cum.CO2[i] < 4.56) {
+    bakje6 <- rbind(bakje6,kostenSSP[i,])
   }
 }
   
 # indexed opnieuw
+# neem de mediaan van bakje 3:
+# cumuCO2: 1.965 
+index.CostEstimate <- 0.02207
+index.MACCosts <- 0.016022
+index.ConsumptionLoss <- 0.02677
+
+kostenSSP.indexed <- kostenSSP
+kostenSSP.indexed$Cost.Estimate..ktrillion. <- kostenSSP.indexed$Cost.Estimate..ktrillion./index.CostEstimate
+kostenSSP.indexed$MAC.Costs..ktrillion. <- kostenSSP.indexed$MAC.Costs..ktrillion./index.MACCosts
+kostenSSP.indexed$Consumption.Loss..ktrillion. <- kostenSSP.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
+
+#plot indexes
+plot(kostenSSP.indexed$Cost.Estimate..ktrillion.~kostenSSP.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "indexed costs", pch = 16, col = "blue")
+points(kostenSSP.indexed$MAC.Costs..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 17, col = "green" )
+points(kostenSSP.indexed$Consumption.Loss..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 18, col = "red" )
+
+# maak de bakjes geindexeerd
+bakje1.indexed <- bakje1
+bakje1.indexed$Cost.Estimate..ktrillion. <- bakje1.indexed$Cost.Estimate..ktrillion./index.CostEstimate
+bakje1.indexed$MAC.Costs..ktrillion. <- bakje1.indexed$MAC.Costs..ktrillion./index.MACCosts
+bakje1.indexed$Consumption.Loss..ktrillion. <- bakje1.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
+
+bakje2.indexed <- bakje2
+bakje2.indexed$Cost.Estimate..ktrillion. <- bakje2.indexed$Cost.Estimate..ktrillion./index.CostEstimate
+bakje2.indexed$MAC.Costs..ktrillion. <- bakje2.indexed$MAC.Costs..ktrillion./index.MACCosts
+bakje2.indexed$Consumption.Loss..ktrillion. <- bakje2.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
+
+bakje3.indexed <- bakje3
+bakje3.indexed$Cost.Estimate..ktrillion. <- bakje3.indexed$Cost.Estimate..ktrillion./index.CostEstimate
+bakje3.indexed$MAC.Costs..ktrillion. <- bakje3.indexed$MAC.Costs..ktrillion./index.MACCosts
+bakje3.indexed$Consumption.Loss..ktrillion. <- bakje3.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
+
+bakje4.indexed <- bakje4
+bakje4.indexed$Cost.Estimate..ktrillion. <- bakje4.indexed$Cost.Estimate..ktrillion./index.CostEstimate
+bakje4.indexed$MAC.Costs..ktrillion. <- bakje4.indexed$MAC.Costs..ktrillion./index.MACCosts
+bakje4.indexed$Consumption.Loss..ktrillion. <- bakje4.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
+
+bakje5.indexed <- bakje5
+bakje5.indexed$Cost.Estimate..ktrillion. <- bakje5.indexed$Cost.Estimate..ktrillion./index.CostEstimate
+bakje5.indexed$MAC.Costs..ktrillion. <- bakje5.indexed$MAC.Costs..ktrillion./index.MACCosts
+bakje5.indexed$Consumption.Loss..ktrillion. <- bakje5.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
+
+bakje6.indexed <- bakje6
+bakje6.indexed$Cost.Estimate..ktrillion. <- bakje6.indexed$Cost.Estimate..ktrillion./index.CostEstimate
+bakje6.indexed$MAC.Costs..ktrillion. <- bakje6.indexed$MAC.Costs..ktrillion./index.MACCosts
+bakje6.indexed$Consumption.Loss..ktrillion. <- bakje6.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
 
 
+# maak bakjes met 1 kostenmaat
+ind.bakje1 <- data.frame(deltaCO2=double(), Costs=double(), stringsAsFactors=FALSE)
+ind.bakje2 <- data.frame(deltaCO2=double(), Costs=double(), stringsAsFactors=FALSE)
+ind.bakje3 <- data.frame(deltaCO2=double(), Costs=double(), stringsAsFactors=FALSE)
+ind.bakje4 <- data.frame(deltaCO2=double(), Costs=double(), stringsAsFactors=FALSE)
+ind.bakje5 <- data.frame(deltaCO2=double(), Costs=double(), stringsAsFactors=FALSE)
+ind.bakje6 <- data.frame(deltaCO2=double(), Costs=double(), stringsAsFactors=FALSE)
+
+for (i in 1:length(bakje1.indexed$Cum.CO2)) {
+  ind.bakje1 <- rbind(ind.bakje1,c(bakje1.indexed$Cum.CO2[i],bakje1.indexed$Cost.Estimate..ktrillion.[i]))
+  ind.bakje1 <- rbind(ind.bakje1,c(bakje1.indexed$Cum.CO2[i],bakje1.indexed$MAC.Costs..ktrillion.[i]))
+  ind.bakje1 <- rbind(ind.bakje1,c(bakje1.indexed$Cum.CO2[i],bakje1.indexed$Consumption.Loss..ktrillion.[i]))
+}
+colnames(ind.bakje1) <- c("deltaCO2", "Costs")
+
+for (i in 1:length(bakje2.indexed$Cum.CO2)) {
+  ind.bakje2 <- rbind(ind.bakje2,c(bakje2.indexed$Cum.CO2[i],bakje2.indexed$Cost.Estimate..ktrillion.[i]))
+  ind.bakje2 <- rbind(ind.bakje2,c(bakje2.indexed$Cum.CO2[i],bakje2.indexed$MAC.Costs..ktrillion.[i]))
+  ind.bakje2 <- rbind(ind.bakje2,c(bakje2.indexed$Cum.CO2[i],bakje2.indexed$Consumption.Loss..ktrillion.[i]))
+}
+colnames(ind.bakje2) <- c("deltaCO2", "Costs")
+
+for (i in 1:length(bakje3.indexed$Cum.CO2)) {
+  ind.bakje3 <- rbind(ind.bakje3,c(bakje3.indexed$Cum.CO2[i],bakje3.indexed$Cost.Estimate..ktrillion.[i]))
+  ind.bakje3 <- rbind(ind.bakje3,c(bakje3.indexed$Cum.CO2[i],bakje3.indexed$MAC.Costs..ktrillion.[i]))
+  ind.bakje3 <- rbind(ind.bakje3,c(bakje3.indexed$Cum.CO2[i],bakje3.indexed$Consumption.Loss..ktrillion.[i]))
+}
+colnames(ind.bakje3) <- c("deltaCO2", "Costs")
+
+for (i in 1:length(bakje4.indexed$Cum.CO2)) {
+  ind.bakje4 <- rbind(ind.bakje4,c(bakje4.indexed$Cum.CO2[i],bakje4.indexed$Cost.Estimate..ktrillion.[i]))
+  ind.bakje4 <- rbind(ind.bakje4,c(bakje4.indexed$Cum.CO2[i],bakje4.indexed$MAC.Costs..ktrillion.[i]))
+  ind.bakje4 <- rbind(ind.bakje4,c(bakje4.indexed$Cum.CO2[i],bakje4.indexed$Consumption.Loss..ktrillion.[i]))
+}
+colnames(ind.bakje4) <- c("deltaCO2", "Costs")
+
+for (i in 1:length(bakje5.indexed$Cum.CO2)) {
+  ind.bakje5 <- rbind(ind.bakje5,c(bakje5.indexed$Cum.CO2[i],bakje5.indexed$Cost.Estimate..ktrillion.[i]))
+  ind.bakje5 <- rbind(ind.bakje5,c(bakje5.indexed$Cum.CO2[i],bakje5.indexed$MAC.Costs..ktrillion.[i]))
+  ind.bakje5 <- rbind(ind.bakje5,c(bakje5.indexed$Cum.CO2[i],bakje5.indexed$Consumption.Loss..ktrillion.[i]))
+}
+colnames(ind.bakje5) <- c("deltaCO2", "Costs")
+
+for (i in 1:length(bakje6.indexed$Cum.CO2)) {
+  ind.bakje6 <- rbind(ind.bakje6,c(bakje6.indexed$Cum.CO2[i],bakje6.indexed$Cost.Estimate..ktrillion.[i]))
+  ind.bakje6 <- rbind(ind.bakje6,c(bakje6.indexed$Cum.CO2[i],bakje6.indexed$MAC.Costs..ktrillion.[i]))
+  ind.bakje6 <- rbind(ind.bakje6,c(bakje6.indexed$Cum.CO2[i],bakje6.indexed$Consumption.Loss..ktrillion.[i]))
+}
+colnames(ind.bakje6) <- c("deltaCO2", "Costs")
+
+
+
+
+#------------------------------------------------
 #------------- Define bakjes ----------------
 
-# 430-480 bakje:
-# 630-1180
-# middelpunt:
-bakje430.480.deltaCO2 <- (0.630+1.180)/2
+# deltaCO2 waarde
+bakje1.deltaCO2 <- (min(ind.bakje1$deltaCO2) + max(ind.bakje1$deltaCO2))/2
+bakje2.deltaCO2 <- (min(ind.bakje2$deltaCO2) + max(ind.bakje2$deltaCO2))/2
+bakje3.deltaCO2 <- (min(ind.bakje3$deltaCO2) + max(ind.bakje3$deltaCO2))/2
+bakje4.deltaCO2 <- (min(ind.bakje4$deltaCO2) + max(ind.bakje4$deltaCO2))/2
+bakje5.deltaCO2 <- (min(ind.bakje5$deltaCO2) + max(ind.bakje5$deltaCO2))/2
+bakje6.deltaCO2 <- (min(ind.bakje6$deltaCO2) + max(ind.bakje6$deltaCO2))/2
+bakjeNoCosts.deltaCO2 <- 6
 
-# 480-530 bakje:
-# 960-1550
-# middelpunt:
-bakje480.530.deltaCO2 <- (0.960+1.550)/2
-
-# 530-580 bakje
-# 1170-2240
-# middelpunt:
-bakje530.580.deltaCO2 <- (1.170+2.240)/2
-
-# 580-650 bakje
-# 1870-2440
-# middelpunt:
-bakje580.650.deltaCO2 <- (1.870+2.440)/2
-
-# 650-720 bakje
-# 2570-3340
-# middelpunt:
-bakje650.720.deltaCO2 <- (2.570+3.340)/2
-
-
-# percentage GDP inlezen (mitigation costs: abatement costs, fig 6.21)
-bakje430.480 <- read.csv(file = "./../Databases/430-480ppmCO2eq.txt", header = TRUE)
-bakje480.530 <- read.csv(file = "./../Databases/480-530ppmCO2eq.txt", header = TRUE)
-bakje530.580 <- read.csv(file = "./../Databases/530-580ppmCO2eq.txt", header = TRUE)
-bakje580.650 <- read.csv(file = "./../Databases/580-650ppmCO2eq.txt", header = TRUE)
-bakje650.720 <- read.csv(file = "./../Databases/650-720ppmCO2eq.txt", header = TRUE)
-
-
-# mean
-bakje430.480.median <- bakje430.480$percentGDP[3]
-bakje480.530.median <- bakje480.530$percentGDP[3]
-bakje530.580.median <- bakje530.580$percentGDP[3]
-bakje580.650.median <- bakje580.650$percentGDP[3]
-bakje650.720.median <- bakje650.720$percentGDP[3]
-
-# std gebaseerd op 25 en 75 precentiel
-bakje430.480std75 <- (bakje430.480$percentGDP[4] - bakje430.480.median)/abs(qnorm(0.75))
-bakje430.480std25 <- (bakje430.480.median - bakje430.480$percentGDP[2])/abs(qnorm(0.25))
-bakje430.480.std <- (bakje430.480std75 + bakje430.480std25)/2
-
-bakje480.530std75 <- (bakje480.530$percentGDP[4] - bakje480.530.median)/abs(qnorm(0.75))
-bakje480.530std25 <- (bakje480.530.median - bakje480.530$percentGDP[2])/abs(qnorm(0.25))
-bakje480.530.std <- (bakje480.530std75 + bakje480.530std25)/2
-
-bakje530.580std75 <- (bakje530.580$percentGDP[4] - bakje530.580.median)/abs(qnorm(0.75))
-bakje530.580std25 <- (bakje530.580.median - bakje530.580$percentGDP[2])/abs(qnorm(0.25))
-bakje530.580.std <- (bakje530.580std75 + bakje530.580std25)/2
-
-bakje580.650std75 <- (bakje580.650$percentGDP[4] - bakje580.650.median)/abs(qnorm(0.75))
-bakje580.650std25 <- (bakje580.650.median - bakje580.650$percentGDP[2])/abs(qnorm(0.25))
-bakje580.650.std <- (bakje580.650std75 + bakje580.650std25)/2
-
-bakje650.720std75 <- (bakje650.720$percentGDP[4] - bakje650.720.median)/abs(qnorm(0.75))
-bakje650.720std25 <- (bakje650.720.median - bakje650.720$percentGDP[2])/abs(qnorm(0.25))
-bakje650.720.std <- (bakje650.720std75 + bakje650.720std25)/2
-
+# median costs
+bakje1.median <- median(ind.bakje1$Costs, na.rm = T)
+bakje2.median <- median(ind.bakje2$Costs, na.rm = T)
+bakje3.median <- median(ind.bakje3$Costs, na.rm = T)
+bakje4.median <- median(ind.bakje4$Costs, na.rm = T)
+bakje5.median <- median(ind.bakje5$Costs, na.rm = T)
+bakje6.median <- median(ind.bakje6$Costs, na.rm = T)
+bakjeNoCosts.median <- 0
 
 # minimum- en maximumwaarde van bakjes
-bakje430.480.min <- bakje430.480$percentGDP[1]
-bakje430.480.max <- bakje430.480$percentGDP[5]
+bakje1.min <- min(ind.bakje1$Costs, na.rm = T)
+bakje1.max <- max(ind.bakje1$Costs, na.rm = T)
 
-bakje480.530.min <- bakje480.530$percentGDP[1]
-bakje480.530.max <- bakje480.530$percentGDP[5]
+bakje2.min <- min(ind.bakje2$Costs, na.rm = T)
+bakje2.max <- max(ind.bakje2$Costs, na.rm = T)
 
-bakje530.580.min <- bakje530.580$percentGDP[1]
-bakje530.580.max <- bakje530.580$percentGDP[5]
+bakje3.min <- min(ind.bakje3$Costs, na.rm = T)
+bakje3.max <- max(ind.bakje3$Costs, na.rm = T)
 
-bakje580.650.min <- bakje580.650$percentGDP[1]
-bakje580.650.max <- bakje580.650$percentGDP[5]
+bakje4.min <- min(ind.bakje4$Costs, na.rm = T)
+bakje4.max <- max(ind.bakje4$Costs, na.rm = T)
 
-bakje650.720.min <- bakje650.720$percentGDP[1]
-bakje650.720.max <- bakje650.720$percentGDP[5]
+bakje5.min <- min(ind.bakje5$Costs, na.rm = T)
+bakje5.max <- max(ind.bakje5$Costs, na.rm = T)
 
+bakje6.min <- min(ind.bakje6$Costs, na.rm = T)
+bakje6.max <- max(ind.bakje6$Costs, na.rm = T)
+
+bakjeNoCosts.min <- 0
+bakjeNoCosts.max <- 0
 
 costs.oneRun <- function(deltaCO2) {
-  # zit het onder bakje 430-480?
-  if (deltaCO2 < bakje430.480.deltaCO2) {
-    return(-1) #return("lager dan bakje 430.480")
-    # zit het tussen bakje 430-480 en 480-530?
-  } else if (deltaCO2 >= bakje430.480.deltaCO2 & deltaCO2 < bakje480.530.deltaCO2) {
-    kosten.median <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.median, bakje480.530.median)
-    kosten.min <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.min, bakje480.530.min)
-    kosten.max <- punt_rechteLijn(deltaCO2, bakje430.480.deltaCO2, bakje480.530.deltaCO2, bakje430.480.max, bakje480.530.max)
+  # zit het onder bakje 1?
+  if (deltaCO2 < bakje1.deltaCO2) {
+    # return(-1) #return("lager dan bakje 430.480")
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje1.deltaCO2, bakje2.deltaCO2, bakje1.median, bakje2.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje1.deltaCO2, bakje2.deltaCO2, bakje1.min, bakje2.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje1.deltaCO2, bakje2.deltaCO2, bakje1.max, bakje2.max)
     
-    # zit het tussen bakje 480-530 en 530-580?
-  } else if (deltaCO2 >= bakje480.530.deltaCO2 & deltaCO2 < bakje530.580.deltaCO2) {
-    kosten.median <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.median, bakje530.580.median)
-    kosten.min <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.min, bakje530.580.min)
-    kosten.max <- punt_rechteLijn(deltaCO2, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.max, bakje530.580.max)
+    # zit het tussen bakje 1 en 2?
+  } else if (deltaCO2 >= bakje1.deltaCO2 & deltaCO2 < bakje2.deltaCO2) {
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje1.deltaCO2, bakje2.deltaCO2, bakje1.median, bakje2.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje1.deltaCO2, bakje2.deltaCO2, bakje1.min, bakje2.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje1.deltaCO2, bakje2.deltaCO2, bakje1.max, bakje2.max)
     
-    # zit het tussen bakje 530-580 en 580-650?
-  } else if (deltaCO2 >= bakje530.580.deltaCO2 & deltaCO2 < bakje580.650.deltaCO2) {
-    kosten.median <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
-    kosten.min <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.min, bakje580.650.min)
-    kosten.max <- punt_rechteLijn(deltaCO2, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.max, bakje580.650.max)
+    # zit het tussen bakje 2 en 3?
+  } else if (deltaCO2 >= bakje2.deltaCO2 & deltaCO2 < bakje3.deltaCO2) {
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje2.deltaCO2, bakje3.deltaCO2, bakje2.median, bakje3.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje2.deltaCO2, bakje3.deltaCO2, bakje2.min, bakje3.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje2.deltaCO2, bakje3.deltaCO2, bakje2.max, bakje3.max)
     
-    # zit het tussen bakje 580-650 en 650-720?
-  } else if (deltaCO2 >= bakje580.650.deltaCO2 & deltaCO2 <= bakje650.720.deltaCO2) {
-    kosten.median <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.median, bakje650.720.median)
-    kosten.min <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.min, bakje650.720.min)
-    kosten.max <- punt_rechteLijn(deltaCO2, bakje580.650.deltaCO2, bakje650.720.deltaCO2, bakje580.650.max, bakje650.720.max)
+    # zit het tussen bakje 3 en 4?
+  } else if (deltaCO2 >= bakje3.deltaCO2 & deltaCO2 < bakje4.deltaCO2) {
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje3.deltaCO2, bakje4.deltaCO2, bakje3.median, bakje4.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje3.deltaCO2, bakje4.deltaCO2, bakje3.min, bakje4.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje3.deltaCO2, bakje4.deltaCO2, bakje3.max, bakje4.max)
     
-  } else  if (deltaCO2 > bakje650.720.deltaCO2) {
-    return(-1) #return("hoger dan bakje 650-720")
+    # zit het tussen bakje 4 en 5?
+  } else if (deltaCO2 >= bakje4.deltaCO2 & deltaCO2 < bakje5.deltaCO2) {
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje4.deltaCO2, bakje5.deltaCO2, bakje4.median, bakje5.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje4.deltaCO2, bakje5.deltaCO2, bakje4.min, bakje5.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje4.deltaCO2, bakje5.deltaCO2, bakje4.max, bakje5.max)
+    
+    # zit het tussen bakje 5 en 6?
+  } else if (deltaCO2 >= bakje5.deltaCO2 & deltaCO2 < bakje6.deltaCO2) {
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakje6.deltaCO2, bakje5.median, bakje6.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakje6.deltaCO2, bakje5.min, bakje6.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakje6.deltaCO2, bakje5.max, bakje6.max)
+    
+    # zit het tussen bakje 6 en NoCost?
+  } else if (deltaCO2 >= bakje6.deltaCO2 & deltaCO2 < bakjeNoCosts.deltaCO2) {
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCosts.deltaCO2, bakje6.median, bakjeNoCosts.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCosts.deltaCO2, bakje6.min, bakjeNoCosts.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCosts.deltaCO2, bakje6.max, bakjeNoCosts.max)
+    
+    # zit het hoger dan bakjeNoCosts  
+  } else  if (deltaCO2 >= bakjeNoCosts.deltaCO2) {
+    return(0) #return("hoger dan bakje NoCosts")
   }
   
   grootte <- kosten.max - kosten.min
@@ -240,13 +321,13 @@ f.dataframe.kosten <- function(N,Ttarget,f.seed) {
 
 N <- 10000
 s.seed <- 21
-remove <- c(-1)
+#remove <- c(-1)
 
 f.costs.CCmatrix <- function(N,f.seed) {
   # initialisatie
   CCmatrixP <- NULL
   CCmatrixS <- NULL
-  aantalMin1 <- vector(mode="numeric", length=0)
+  #aantalMin1 <- vector(mode="numeric", length=0)
   teller <- 0
   
   
@@ -257,23 +338,25 @@ f.costs.CCmatrix <- function(N,f.seed) {
     sample_en_result.deltaCO2 <- f.cumuCO2result(N,i,cumuvstemp.sample)
     
     kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+    # herleid costsensitivity
+    cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
     
-    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,kosten.result)
+    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
     
     # verwijder resultaten buiten bakjes
-    waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
-    aantalMin1 <- c(aantalMin1, length(waarZitMin1))
+    #waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
+    #aantalMin1 <- c(aantalMin1, length(waarZitMin1))
     
-    if (!identical(waarZitMin1, integer(0))) {
-      sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
-    }
+    #if (!identical(waarZitMin1, integer(0))) {
+    #  sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
+    #}
     
     # pearson CC:
     CCmatrixP.hulp <- cor(sample_en_result.kosten)[-1,]
-    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-5,6])
+    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-6,7])
     # Spearman CC:
     CCmatrixS.hulp <- cor(sample_en_result.kosten, method = "spearman")[-1,]
-    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-5,6])
+    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-6,7])
     
     teller <- teller + 1
   }
