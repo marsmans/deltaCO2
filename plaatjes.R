@@ -78,6 +78,17 @@ abline(a=nonCO22010max,b=TCRnonCO2max, col = "blue")
 abline(a=nonCO22010max,b=TCRnonCO2max2, col = "green")
 
 
+# plaatje van SSPdata curves
+plot(kostenSSP.indexed$Cost.Estimate..ktrillion.~kostenSSP.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "indexed costs", pch = 16, col = "blue", xlim = c(0,6))
+points(kostenSSP.indexed$MAC.Costs..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 17, col = "green" )
+points(kostenSSP.indexed$Consumption.Loss..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 18, col = "red" )
+curve(143.02*exp(-1.415*x), add = T)
+curve(13.373*exp(-0.804*x), add = T)
+curve(36.598*exp(-1.054*x), add = T)
+# text(locator(), labels = c("143.02*exp(-1.415*x)", "13.373*exp(-0.804*x)", "36.598*exp(-1.054*x)"))
+text(locator(), labels = c("y1", "y2", "y3"))
+
+
 
 # plaatje van deltaCO2 vs kosten
 deltaCO2.results <- data.table(deltaCO2.results)
@@ -93,17 +104,17 @@ plot(costsIPCC.result2$kosten~deltaCO2.results2$cumuCO2,xlim=c(0,7), ylim=c(-1.2
 # nieuwe versie
 # plaatje van deltaCO2 vs kosten
 deltaCO2 <- data.table(deltaCO2)
-costsIPCC <- data.table(costsIPCC)
+costs <- data.table(costs)
 
 deltaCO22 <-gather(deltaCO2,temp,cumuCO2,as.character(seq(1, 4, by = 0.1)))
-costsIPCC2 <- gather(costsIPCC,temp,kosten,as.character(seq(1, 4, by = 0.1)))
+costs2 <- gather(costs,temp,kosten,as.character(seq(1, 4, by = 0.1)))
 
-deltaCO2CostsIPCC2 <- cbind(deltaCO22, kosten = costsIPCC2$kosten)
+deltaCO2Costs2 <- cbind(deltaCO22, kosten = costs2$kosten)
 
 par(mfrow=c(1,1))
-plot(costsIPCC2$kosten~deltaCO22$cumuCO2,xlim=c(-1,7), ylim=c(-0.5,12), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "abatement costs (%GDP)")
+plot(costs2$kosten~deltaCO22$cumuCO2,xlim=c(-1,7), ylim=c(-0.5,12), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "abatement costs (%GDP)")
 
-p = ggplot(deltaCO2CostsIPCC2,aes(x=cumuCO2,y=kosten))
+p = ggplot(deltaCO2Costs2,aes(x=cumuCO2,y=kosten))
 p = p + geom_point(alpha = 0.03)
 p = p + theme_bw()
 p = p + labs(x = "deltaCO2", y = "Costs") 
@@ -118,13 +129,14 @@ deltaCO22 <-gather(deltaCO2,temp,cumuCO2,as.character(seq(1, 4, by = 0.1)))
 costsIPCC2 <- gather(costsIPCC,temp,kosten,as.character(seq(1, 4, by = 0.1)))
 
 par(mfrow=c(1,1))
-plot(costsIPCC2$kosten~costsIPCC2$temp,xlim=c(-1,7), ylim=c(-0.5,4.5), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "abatement costs (%GDP)")
+plot(costs2$kosten~costs2$temp,xlim=c(-1,7), ylim=c(-0.5,4.5), xlab = "cumu CO2 (2010-2100) (TtCO2)", ylab = "abatement costs (%GDP)")
 
-p = ggplot(costsIPCC2,aes(x=temp,y=kosten))
+p = ggplot(costs2,aes(x=temp,y=kosten))
 p = p + geom_point(alpha = 0.03)
 p = p + geom_smooth(method = lm)
 p = p + theme_bw()
 p = p + labs(x = "Ttarget", y = "Costs") 
+p = p + coord_cartesian(xlim = c(0,32), ylim = c(0, 13))
 p
 
 
@@ -372,7 +384,7 @@ p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','cs')])
 p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue"))
-p = p + ggtitle("CC values for costs, extended boxes, lin between boxes")
+p = p + ggtitle("CC values for costs, SSP-data")
 p
 # ggsave(paste("CC_GE_lin.png"),p)
 
@@ -385,7 +397,7 @@ q = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cs')]) # c('cumuCO2result
 q = q + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="fill")
 q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
 q = q + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green","nonCO2"="blue"))
-q = q + ggtitle("CC values costs, lin between boxes")
+q = q + ggtitle("CC values costs, SSP-data")
 q
 
 # ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)

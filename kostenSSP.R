@@ -17,8 +17,8 @@ punt_rechteLijn <- function(x, x.links, x.rechts, fx.links, fx.rechts) {
 
 #---------------- data SSP inlezen ----------------------
 
-kostenSSP <- read.csv(file = "./../Databases/kostenSSP.csv", header = TRUE, sep = ";")
-#kostenSSPno0 <- read.csv(file = "./../Databases/kostenSSPno0.csv", header = TRUE, sep = ";")
+#kostenSSP <- read.csv(file = "./../Databases/kostenSSP.csv", header = TRUE, sep = ";")
+kostenSSP <- read.csv(file = "./../Databases/kostenSSPno0.csv", header = TRUE, sep = ";")
 
 
 # schalen naar Tt CO2
@@ -96,7 +96,7 @@ kostenSSP.indexed$MAC.Costs..ktrillion. <- kostenSSP.indexed$MAC.Costs..ktrillio
 kostenSSP.indexed$Consumption.Loss..ktrillion. <- kostenSSP.indexed$Consumption.Loss..ktrillion./index.ConsumptionLoss
 
 #plot indexes
-plot(kostenSSP.indexed$Cost.Estimate..ktrillion.~kostenSSP.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "indexed costs", pch = 16, col = "blue")
+plot(kostenSSP.indexed$Cost.Estimate..ktrillion.~kostenSSP.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "indexed costs", pch = 16, col = "blue", xlim = c(0,6))
 points(kostenSSP.indexed$MAC.Costs..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 17, col = "green" )
 points(kostenSSP.indexed$Consumption.Loss..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 18, col = "red" )
 
@@ -200,26 +200,26 @@ bakjeNoCosts.deltaCO2 <- 6
 # median costs
 bakje1.median <- median(ind.bakje1$Costs, na.rm = T)
 bakje2.median <- median(ind.bakje2$Costs, na.rm = T)
-bakje3.median <- median(ind.bakje3$Costs, na.rm = T)
-bakje4.median <- median(ind.bakje4$Costs, na.rm = T)
+bakje3.median <- 0.422486 #median(ind.bakje3$Costs, na.rm = T)
+bakje4.median <- 0.3213 #median(ind.bakje4$Costs, na.rm = T)
 bakje5.median <- median(ind.bakje5$Costs, na.rm = T)
 bakje6.median <- median(ind.bakje6$Costs, na.rm = T)
 bakjeNoCosts.median <- 0
 
 # minimum- en maximumwaarde van bakjes
 bakje1.min <- min(ind.bakje1$Costs, na.rm = T)
-bakje1.max <- max(ind.bakje1$Costs, na.rm = T)
+bakje1.max <- 17.63132226 #max(ind.bakje1$Costs, na.rm = T)
 
 bakje2.min <- min(ind.bakje2$Costs, na.rm = T)
 bakje2.max <- max(ind.bakje2$Costs, na.rm = T)
 
-bakje3.min <- min(ind.bakje3$Costs, na.rm = T)
-bakje3.max <- max(ind.bakje3$Costs, na.rm = T)
+bakje3.min <- 0.068066949 #min(ind.bakje3$Costs, na.rm = T)
+bakje3.max <- 4.7742839 #max(ind.bakje3$Costs, na.rm = T)
 
 bakje4.min <- min(ind.bakje4$Costs, na.rm = T)
-bakje4.max <- max(ind.bakje4$Costs, na.rm = T)
+bakje4.max <- 3.458466885 #max(ind.bakje4$Costs, na.rm = T)
 
-bakje5.min <- min(ind.bakje5$Costs, na.rm = T)
+bakje5.min <- 0.011214519 #min(ind.bakje5$Costs, na.rm = T)
 bakje5.max <- max(ind.bakje5$Costs, na.rm = T)
 
 bakje6.min <- min(ind.bakje6$Costs, na.rm = T)

@@ -141,6 +141,7 @@ f.dataframekosten <- function(N,Ttarget,f.seed) {
 #----- kostenbakjes ---
 
 source("kostenbakjes.R")
+source("kostenSSP.R")
 
 f.dataframekosten <- function(N,Ttarget,f.seed) {
   cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
@@ -172,21 +173,21 @@ f.dataframekosten <- function(N,Ttarget,f.seed) {
 
 deltaCO2 <- NULL
 cs <- NULL
-costsIPCC <- NULL
+costs <- NULL
 for (i in seq(1, 4, by = 0.1)) {
   data <- f.dataframekosten(N,i,s.seed)
   print(length(data$cumuCO2result))
   # print(length(data$cs))
   deltaCO2 <- cbind(deltaCO2, data$cumuCO2result)
   cs <- cbind(cs, data$cs)
-  costsIPCC <- cbind(costsIPCC, data$kosten.result)
+  costs <- cbind(costs, data$kosten.result)
 }
 colnames(deltaCO2) <- as.character(seq(1, 4, by = 0.1))
 colnames(cs) <- as.character(seq(1, 4, by = 0.1))
-colnames(costsIPCC) <- as.character(seq(1, 4, by = 0.1))
+colnames(costs) <- as.character(seq(1, 4, by = 0.1))
 deltaCO2 = data.table(deltaCO2)
 cs = data.table(cs)
-costsIPCC = data.table(costsIPCC)
+costs = data.table(costs)
 
 
 # maak veel histogrammen:
@@ -197,15 +198,15 @@ hist(costsIPCC, breaks = "Scott")
 # maak veel scatterplots
 # lukt nog niet :(
 par(mfrow=c(2,2))
-plot(costsIPCC$`1.3`~cs$`1.3`)
-plot(costsIPCC$`2`~cs$`2`)
-plot(costsIPCC$`3`~cs$`3`)
-plot(costsIPCC$`3.4`~cs$`3.4`)
+plot(costsIPCC$`1.3`~cs$`1.3`, ylab = "Costs", xlim = c(-0.5,100))
+plot(costsIPCC$`2`~cs$`2`, ylab = "Costs")
+plot(costsIPCC$`3`~cs$`3`, ylab = "Costs")
+plot(costsIPCC$`3.4`~cs$`3.4`, ylab = "Costs")
 
-plot(costsIPCC$`1.3`~deltaCO2$`1.3`)
-plot(costsIPCC$`2`~deltaCO2$`2`)
-plot(costsIPCC$`3`~deltaCO2$`3`)
-plot(costsIPCC$`3.4`~deltaCO2$`3.4`)
+plot(costsIPCC$`1.3`~deltaCO2$`1.3`, ylab = "Costs")
+plot(costsIPCC$`2`~deltaCO2$`2`, ylab = "Costs")
+plot(costsIPCC$`3`~deltaCO2$`3`, ylab = "Costs")
+plot(costsIPCC$`3.4`~deltaCO2$`3.4`, ylab = "Costs")
 par(mfrow=c(1,1))
 
 
