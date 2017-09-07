@@ -193,7 +193,7 @@ costs = data.table(costs)
 # maak veel histogrammen:
 hist(deltaCO2, breaks = "Scott")
 hist(cs, breaks = "Scott")
-hist(costsIPCC, breaks = "Scott")
+hist(costs, breaks = "Scott")
 
 # maak veel scatterplots
 # lukt nog niet :(

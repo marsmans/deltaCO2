@@ -26,7 +26,7 @@ kostenSSP$Cum.CO2 <- kostenSSP$Cum.CO2/1000
 #kostenSSPno0$Cum.CO2 <- kostenSSPno0$Cum.CO2/1000
 
 #plot
-plot(kostenSSP$Cost.Estimate..ktrillion.~kostenSSP$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
+plot(kostenSSP$Cost.Estimate..ktrillion.~kostenSSP$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue", xlim = c(0,6))
 points(kostenSSP$MAC.Costs..ktrillion.~kostenSSP$Cum.CO2, pch = 17, col = "green" )
 points(kostenSSP$Consumption.Loss..ktrillion.~kostenSSP$Cum.CO2, pch = 18, col = "red" )
 
@@ -195,7 +195,7 @@ bakje3.deltaCO2 <- (min(ind.bakje3$deltaCO2) + max(ind.bakje3$deltaCO2))/2
 bakje4.deltaCO2 <- (min(ind.bakje4$deltaCO2) + max(ind.bakje4$deltaCO2))/2
 bakje5.deltaCO2 <- (min(ind.bakje5$deltaCO2) + max(ind.bakje5$deltaCO2))/2
 bakje6.deltaCO2 <- (min(ind.bakje6$deltaCO2) + max(ind.bakje6$deltaCO2))/2
-bakjeNoCosts.deltaCO2 <- 6
+bakjeNoCostsSSP.deltaCO2 <- 6
 
 # median costs
 bakje1.median <- median(ind.bakje1$Costs, na.rm = T)
@@ -204,7 +204,7 @@ bakje3.median <- 0.422486 #median(ind.bakje3$Costs, na.rm = T)
 bakje4.median <- 0.3213 #median(ind.bakje4$Costs, na.rm = T)
 bakje5.median <- median(ind.bakje5$Costs, na.rm = T)
 bakje6.median <- median(ind.bakje6$Costs, na.rm = T)
-bakjeNoCosts.median <- 0
+bakjeNoCostsSSP.median <- 0
 
 # minimum- en maximumwaarde van bakjes
 bakje1.min <- min(ind.bakje1$Costs, na.rm = T)
@@ -225,8 +225,8 @@ bakje5.max <- max(ind.bakje5$Costs, na.rm = T)
 bakje6.min <- min(ind.bakje6$Costs, na.rm = T)
 bakje6.max <- max(ind.bakje6$Costs, na.rm = T)
 
-bakjeNoCosts.min <- 0
-bakjeNoCosts.max <- 0
+bakjeNoCostsSSP.min <- 0
+bakjeNoCostsSSP.max <- 0
 
 costs.oneRun <- function(deltaCO2) {
   # zit het onder bakje 1?
@@ -267,14 +267,14 @@ costs.oneRun <- function(deltaCO2) {
     kosten.max <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakje6.deltaCO2, bakje5.max, bakje6.max)
     
     # zit het tussen bakje 6 en NoCost?
-  } else if (deltaCO2 >= bakje6.deltaCO2 & deltaCO2 < bakjeNoCosts.deltaCO2) {
-    kosten.median <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCosts.deltaCO2, bakje6.median, bakjeNoCosts.median)
-    kosten.min <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCosts.deltaCO2, bakje6.min, bakjeNoCosts.min)
-    kosten.max <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCosts.deltaCO2, bakje6.max, bakjeNoCosts.max)
+  } else if (deltaCO2 >= bakje6.deltaCO2 & deltaCO2 < bakjeNoCostsSSP.deltaCO2) {
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje6.median, bakjeNoCostsSSP.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje6.min, bakjeNoCostsSSP.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje6.max, bakjeNoCostsSSP.max)
     
-    # zit het hoger dan bakjeNoCosts  
-  } else  if (deltaCO2 >= bakjeNoCosts.deltaCO2) {
-    return(0) #return("hoger dan bakje NoCosts")
+    # zit het hoger dan bakjeNoCostsSSP  
+  } else  if (deltaCO2 >= bakjeNoCostsSSP.deltaCO2) {
+    return(0) #return("hoger dan bakje NoCostsSSP")
   }
   
   grootte <- kosten.max - kosten.min
@@ -368,3 +368,71 @@ f.costs.CCmatrix <- function(N,f.seed) {
 
 # maak een matrix van CCwaarden
 #CCmat <- f.costs.CCmatrix(N,s.seed)
+
+# maak een CC tabel voor een enkele Ttarget
+f.CCtabel <- function(N,Ttarget, f.seed) {
+  
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  
+  sample_en_result.deltaCO2 <- f.cumuCO2result(N,Ttarget,cumuvstemp.sample)
+  
+  kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+  # herleid costsensitivity
+  cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+  
+  sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
+  
+  
+  # pearson CC:
+  CCtabelP <- cor(sample_en_result.kosten)[-1,-1]
+  
+  # Spearman CC:
+  CCtabelS <- cor(sample_en_result.kosten, method = "spearman")[-1,-1]
+  
+  return(list(CCtabelP,CCtabelS))
+}
+
+
+#maar een CCmatrix voor CC tussen cs en andere input
+f.cs.CCmatrix <- function(N,f.seed) {
+  # initialisatie
+  CCmatrixP <- NULL
+  CCmatrixS <- NULL
+  #aantalMin1 <- vector(mode="numeric", length=0)
+  teller <- 0
+  
+  
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  
+  for (i in seq(1.2, 3.4, by = 0.1)) {
+    # print(i)
+    sample_en_result.deltaCO2 <- f.cumuCO2result(N,i,cumuvstemp.sample)
+    
+    kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+    # herleid costsensitivity
+    cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+    
+    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
+    
+    # verwijder resultaten buiten bakjes
+    #waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
+    #aantalMin1 <- c(aantalMin1, length(waarZitMin1))
+    
+    #if (!identical(waarZitMin1, integer(0))) {
+    #  sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
+    #}
+    
+    # pearson CC:
+    CCmatrixP.hulp <- cor(sample_en_result.kosten)[-1,]
+    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-5,6])
+    # Spearman CC:
+    CCmatrixS.hulp <- cor(sample_en_result.kosten, method = "spearman")[-1,]
+    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-5,6])
+    
+    teller <- teller + 1
+  }
+  rownames(CCmatrixP) <- as.character(seq(1.2, 3.4, by = 0.1))
+  rownames(CCmatrixS) <- as.character(seq(1.2, 3.4, by = 0.1))
+  
+  return(list(CCmatrixP,CCmatrixS))
+}

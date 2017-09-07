@@ -78,7 +78,7 @@ abline(a=nonCO22010max,b=TCRnonCO2max, col = "blue")
 abline(a=nonCO22010max,b=TCRnonCO2max2, col = "green")
 
 
-# plaatje van SSPdata curves
+# plaatje van SSPdata curves om bakjes te corrigeren
 plot(kostenSSP.indexed$Cost.Estimate..ktrillion.~kostenSSP.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "indexed costs", pch = 16, col = "blue", xlim = c(0,6))
 points(kostenSSP.indexed$MAC.Costs..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 17, col = "green" )
 points(kostenSSP.indexed$Consumption.Loss..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 18, col = "red" )
@@ -90,7 +90,7 @@ text(locator(), labels = c("y1", "y2", "y3"))
 
 
 
-# plaatje van deltaCO2 vs kosten
+# plaatje van deltaCO2 vs kosten, oud
 deltaCO2.results <- data.table(deltaCO2.results)
 costsIPCC.result <- data.table(costsIPCC.result)
 
@@ -359,7 +359,7 @@ ggsave(paste("CC_T2010_TCRE.png"),q)
 
 
 
-
+#!!!!!!!!!!!! deze moeten we hebben voor CC van inputparameters en kosten
 #----------- plot van CC waarden met nonCO2 en kostenbakjes IPCC en kostenbakjes SSP --------------
 
 
@@ -403,8 +403,25 @@ q
 # ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)
 
 
+# ------- plot van CC waarden tussen cs en andere input
+source("kostenSSP.R")
 
+# krijgt een CC matrix
+s.seed <- 21
+CCmatcs <- f.cs.CCmatrix(N,s.seed)
+CCdatacs = data.table(CCmatcs[[1]])
+# maak er een 'werkbaarder' format van
+CC <-gather(CCdatacs,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result','kosten.result'))
+CC=data.table(CC)
+CC$Ttarget <- as.character(seq(1.2, 3.4, by = 0.1))
 
+# plotting (probeersel) staven naast elkaar
+p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','kosten.result')])
+p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
+p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
+p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "kosten.result"="yellow"))
+p = p + ggtitle("CC values for cs, SSP-data")
+p
 
 
 #----------- plot van CC waarden (non-lin) --------------
