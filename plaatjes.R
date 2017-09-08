@@ -377,14 +377,14 @@ CCdata = data.table(CCmat[[1]])
 # maak er een 'werkbaarder' format van
 CC <-gather(CCdata,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result','cs'))
 CC=data.table(CC)
-CC$Ttarget <- as.character(seq(1.2, 3.4, by = 0.1))
+CC$Ttarget <- as.character(seq(1.4, 3.4, by = 0.1))
 
 # plotting (probeersel) staven naast elkaar
 p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','cs')])
 p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue"))
-p = p + ggtitle("CC values for costs, SSP-data")
+p = p + ggtitle("CC values (Pearson rank) for costs, AR5-data")
 p
 # ggsave(paste("CC_GE_lin.png"),p)
 
@@ -404,23 +404,24 @@ q
 
 
 # ------- plot van CC waarden tussen cs en andere input
+source("kostenbakjes.R")
 source("kostenSSP.R")
 
 # krijgt een CC matrix
 s.seed <- 21
 CCmatcs <- f.cs.CCmatrix(N,s.seed)
-CCdatacs = data.table(CCmatcs[[1]])
+CCdatacs = data.table(CCmatcs[[2]])
 # maak er een 'werkbaarder' format van
 CC <-gather(CCdatacs,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result','kosten.result'))
 CC=data.table(CC)
-CC$Ttarget <- as.character(seq(1.2, 3.4, by = 0.1))
+CC$Ttarget <- as.character(seq(1.4, 3.4, by = 0.1))
 
 # plotting (probeersel) staven naast elkaar
 p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','kosten.result')])
 p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "kosten.result"="yellow"))
-p = p + ggtitle("CC values for cs, SSP-data")
+p = p + ggtitle("CC values (Spearman rank) for CF, AR5-data")
 p
 
 

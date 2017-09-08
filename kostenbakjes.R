@@ -201,7 +201,7 @@ f.costs.CCmatrix <- function(N,f.seed) {
   
   cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
   
-  for (i in seq(1.2, 3.4, by = 0.1)) {
+  for (i in seq(1.4, 3.4, by = 0.1)) {
     # print(i)
     sample_en_result.deltaCO2 <- f.cumuCO2result(N,i,cumuvstemp.sample)
     
@@ -228,11 +228,79 @@ f.costs.CCmatrix <- function(N,f.seed) {
     
     teller <- teller + 1
   }
-  rownames(CCmatrixP) <- as.character(seq(1.2, 3.4, by = 0.1))
-  rownames(CCmatrixS) <- as.character(seq(1.2, 3.4, by = 0.1))
+  rownames(CCmatrixP) <- as.character(seq(1.4, 3.4, by = 0.1))
+  rownames(CCmatrixS) <- as.character(seq(1.4, 3.4, by = 0.1))
   
   return(list(CCmatrixP,CCmatrixS))
 }
 
 # maak een matrix van CCwaarden
 #CCmat <- f.costs.CCmatrix(N,s.seed)
+
+# maak een CC tabel voor een enkele Ttarget
+f.CCtabel <- function(N,Ttarget, f.seed) {
+  
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  
+  sample_en_result.deltaCO2 <- f.cumuCO2result(N,Ttarget,cumuvstemp.sample)
+  
+  kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+  # herleid costsensitivity
+  cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+  
+  sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
+  
+  
+  # pearson CC:
+  CCtabelP <- cor(sample_en_result.kosten)[-1,-1]
+  
+  # Spearman CC:
+  CCtabelS <- cor(sample_en_result.kosten, method = "spearman")[-1,-1]
+  
+  return(list(CCtabelP,CCtabelS))
+}
+
+
+#maar een CCmatrix voor CC tussen cs en andere input
+f.cs.CCmatrix <- function(N,f.seed) {
+  # initialisatie
+  CCmatrixP <- NULL
+  CCmatrixS <- NULL
+  #aantalMin1 <- vector(mode="numeric", length=0)
+  teller <- 0
+  
+  
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  
+  for (i in seq(1.4, 3.4, by = 0.1)) {
+    # print(i)
+    sample_en_result.deltaCO2 <- f.cumuCO2result(N,i,cumuvstemp.sample)
+    
+    kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+    # herleid costsensitivity
+    cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+    
+    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
+    
+    # verwijder resultaten buiten bakjes
+    #waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
+    #aantalMin1 <- c(aantalMin1, length(waarZitMin1))
+    
+    #if (!identical(waarZitMin1, integer(0))) {
+    #  sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
+    #}
+    
+    # pearson CC:
+    CCmatrixP.hulp <- cor(sample_en_result.kosten)[-1,]
+    CCmatrixP <- rbind(CCmatrixP, CCmatrixP.hulp[-5,6])
+    # Spearman CC:
+    CCmatrixS.hulp <- cor(sample_en_result.kosten, method = "spearman")[-1,]
+    CCmatrixS <- rbind(CCmatrixS, CCmatrixS.hulp[-5,6])
+    
+    teller <- teller + 1
+  }
+  rownames(CCmatrixP) <- as.character(seq(1.4, 3.4, by = 0.1))
+  rownames(CCmatrixS) <- as.character(seq(1.4, 3.4, by = 0.1))
+  
+  return(list(CCmatrixP,CCmatrixS))
+}

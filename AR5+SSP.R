@@ -24,6 +24,25 @@ colnames(AR5bakjes) <- c("deltaCO2", "min", "median", "max")
 #                        max = c(bakje430.480.max, bakje480.530.max, bakje530.580.max, bakje580.650.max, bakje650.720.max, bakjeNoCosts.max))
 
 
+# normaliseer AR5 bakjes op dezelfde manier als de SSP-data:
+deltaCO2.index <- 1.965
+
+index.AR5 <- punt_rechteLijn(deltaCO2.index, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
+
+#index min en max uitrekenen, is dit zo goed?
+indexAR5.min <- punt_rechteLijn(deltaCO2.index, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.min, bakje580.650.min)
+indexAR5.min <- indexAR5.min/index.AR5
+indexAR5.max <- punt_rechteLijn(deltaCO2.index, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.max, bakje580.650.max)
+indexAR5.max <- indexAR5.max/index.AR5
+
+AR5bakjes$min <- AR5bakjes$min/index.AR5
+AR5bakjes$median <- AR5bakjes$median/index.AR5
+AR5bakjes$max <- AR5bakjes$max/index.AR5
+
+# andere manier, met AR5bakjes geindexeerd: (moet nog worden geprogrammeerd)
+indexAR5.min <- punt_rechteLijn(deltaCO2.index, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.min, bakje580.650.min)
+
+
 # krijg SSP bakjes
 SSPbakjes <- data.frame(bakje1.deltaCO2, bakje1.min, bakje1.median, bakje1.max)
 SSPbakjes <- rbind(SSPbakjes, c(bakje2.deltaCO2, bakje2.min, bakje2.median, bakje2.max))

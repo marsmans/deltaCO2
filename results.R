@@ -197,16 +197,19 @@ hist(costs, breaks = "Scott")
 
 # maak veel scatterplots
 # lukt nog niet :(
-par(mfrow=c(2,2))
-plot(costsIPCC$`1.3`~cs$`1.3`, ylab = "Costs", xlim = c(-0.5,100))
-plot(costsIPCC$`2`~cs$`2`, ylab = "Costs")
-plot(costsIPCC$`3`~cs$`3`, ylab = "Costs")
-plot(costsIPCC$`3.4`~cs$`3.4`, ylab = "Costs")
 
-plot(costsIPCC$`1.3`~deltaCO2$`1.3`, ylab = "Costs")
-plot(costsIPCC$`2`~deltaCO2$`2`, ylab = "Costs")
-plot(costsIPCC$`3`~deltaCO2$`3`, ylab = "Costs")
-plot(costsIPCC$`3.4`~deltaCO2$`3.4`, ylab = "Costs")
+# 4 scatterplots costs vs cs
+par(mfrow=c(2,2))
+plot(costs$`1.3`~cs$`1.3`, ylab = "Costs", xlim = c(-0.5,100))
+plot(costs$`2`~cs$`2`, ylab = "Costs")
+plot(costs$`3`~cs$`3`, ylab = "Costs")
+plot(costs$`3.4`~cs$`3.4`, ylab = "Costs")
+
+# 4 scatterplots costs vs deltaCO2
+plot(costs$`1.4`~deltaCO2$`1.4`, ylab = "Costs")
+plot(costs$`2`~deltaCO2$`2`, ylab = "Costs")
+plot(costs$`3`~deltaCO2$`3`, ylab = "Costs")
+plot(costs$`3.4`~deltaCO2$`3.4`, ylab = "Costs")
 par(mfrow=c(1,1))
 
 
