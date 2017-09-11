@@ -7,6 +7,7 @@
 
 source("kostenbakjes.R")
 source("kostenSSP.R")
+source("kostenSSPandereindex.R")
 
 # krijg AR5 bakjes
 AR5bakjes <- data.frame(bakje430.480.deltaCO2, bakje430.480.min, bakje430.480.median, bakje430.480.max)
@@ -25,25 +26,32 @@ colnames(AR5bakjes) <- c("deltaCO2", "min", "median", "max")
 
 
 # normaliseer AR5 bakjes op dezelfde manier als de SSP-data:
-deltaCO2.index <- 1.965
+deltaCO2.index <- deltaCO2.index
 
-index.AR5 <- punt_rechteLijn(deltaCO2.index, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.median, bakje580.650.median)
+# tussen welke twee bakjes ligt dat?
+# tussen bakje480.530 en bakje530.580
 
-#index min en max uitrekenen, is dit zo goed?
-indexAR5.min <- punt_rechteLijn(deltaCO2.index, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.min, bakje580.650.min)
-indexAR5.min <- indexAR5.min/index.AR5
-indexAR5.max <- punt_rechteLijn(deltaCO2.index, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.max, bakje580.650.max)
-indexAR5.max <- indexAR5.max/index.AR5
+index.AR5 <- punt_rechteLijn(deltaCO2.index, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.median, bakje530.580.median)
 
 AR5bakjes$min <- AR5bakjes$min/index.AR5
 AR5bakjes$median <- AR5bakjes$median/index.AR5
 AR5bakjes$max <- AR5bakjes$max/index.AR5
 
+# ik wil: geindexeerde costs op deltaCO2.index waarde:
+
+#index min en max uitrekenen, is dit zo goed? ik denk het wel
+indexAR5.min <- punt_rechteLijn(deltaCO2.index, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.min, bakje530.580.min)/index.AR5
+indexAR5.max <- punt_rechteLijn(deltaCO2.index, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.max, bakje530.580.max)/index.AR5
+indexAR5.med <- punt_rechteLijn(deltaCO2.index, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.median, bakje530.580.median)/index.AR5
+
+
 # andere manier, met AR5bakjes geindexeerd: (moet nog worden geprogrammeerd)
-indexAR5.min <- punt_rechteLijn(deltaCO2.index, bakje530.580.deltaCO2, bakje580.650.deltaCO2, bakje530.580.min, bakje580.650.min)
+indexAR5.min <- punt_rechteLijn(deltaCO2.index, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.min/index.AR5, bakje530.580.min/index.AR5)
+indexAR5.max <- punt_rechteLijn(deltaCO2.index, bakje480.530.deltaCO2, bakje530.580.deltaCO2, bakje480.530.max/index.AR5, bakje530.580.max/index.AR5)
 
 
-# krijg SSP bakjes
+
+#------ krijg SSP bakjes
 SSPbakjes <- data.frame(bakje1.deltaCO2, bakje1.min, bakje1.median, bakje1.max)
 SSPbakjes <- rbind(SSPbakjes, c(bakje2.deltaCO2, bakje2.min, bakje2.median, bakje2.max))
 SSPbakjes <- rbind(SSPbakjes, c(bakje3.deltaCO2, bakje3.min, bakje3.median, bakje3.max))

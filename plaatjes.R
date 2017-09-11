@@ -88,6 +88,15 @@ curve(36.598*exp(-1.054*x), add = T)
 # text(locator(), labels = c("143.02*exp(-1.415*x)", "13.373*exp(-0.804*x)", "36.598*exp(-1.054*x)"))
 text(locator(), labels = c("y1", "y2", "y3"))
 
+# plaatje nieuw index
+plot(kostenSSP.indexed$Cost.Estimate..ktrillion.~kostenSSP.indexed$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "indexed costs", pch = 16, col = "blue", xlim = c(0,6))
+points(kostenSSP.indexed$MAC.Costs..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 17, col = "green" )
+points(kostenSSP.indexed$Consumption.Loss..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 18, col = "red" )
+curve(2.7593*exp(-1.884*x), add = T)
+curve(3.6792*exp(-0.968*x), add = T)
+curve(28.84*exp(-0.986*x), add = T)
+
+
 
 
 # plaatje van deltaCO2 vs kosten, oud
@@ -276,7 +285,7 @@ ggsave(paste("CC_GE_lin_stacked_absolute.png"),p)
 
 #----------- plot van CC waarden (lin) zonder costs.slope --------------
 
-#!!!!!!!!!!!!!- deze moeten we hebben voor cc tussen deltaCO2 en input
+#==========> deze moeten we hebben voor cc tussen deltaCO2 en input
 # MET NONCO2
 
 source("TCRE+nonCO2.R")
@@ -359,7 +368,7 @@ ggsave(paste("CC_T2010_TCRE.png"),q)
 
 
 
-#!!!!!!!!!!!! deze moeten we hebben voor CC van inputparameters en kosten
+#==========> deze moeten we hebben voor CC van inputparameters en kosten
 #----------- plot van CC waarden met nonCO2 en kostenbakjes IPCC en kostenbakjes SSP --------------
 
 
@@ -369,6 +378,7 @@ source("kostenbakjes.R")
 source("kostenbakjesDeterministisch.R")
 
 source("kostenSSP.R")
+source("kostenSSPandereindex.R")
 
 # krijgt een CC matrix
 s.seed <- 21
@@ -384,7 +394,7 @@ p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','cs')])
 p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue"))
-p = p + ggtitle("CC values (Pearson rank) for costs, AR5-data")
+p = p + ggtitle("CC values (Pearson rank) for costs, SSP-data")
 p
 # ggsave(paste("CC_GE_lin.png"),p)
 

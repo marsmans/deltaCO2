@@ -142,6 +142,7 @@ f.dataframekosten <- function(N,Ttarget,f.seed) {
 
 source("kostenbakjes.R")
 source("kostenSSP.R")
+source("kostenSSPandereindex.R")
 
 f.dataframekosten <- function(N,Ttarget,f.seed) {
   cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
