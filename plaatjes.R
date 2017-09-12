@@ -412,6 +412,42 @@ q
 
 # ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)
 
+#---------- probeersel met sampletrans01
+
+source("kostenbakjesAR5tran01toCosts.R")
+
+# krijgt een CC matrix
+s.seed <- 21
+CCmat <- f.costs.CCmatrix(N,s.seed)
+CCdata = data.table(CCmat[[2]])
+# maak er een 'werkbaarder' format van
+CC <-gather(CCdata,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result','sampletrans01'))
+CC=data.table(CC)
+CC$Ttarget <- as.character(seq(1.4, 3.4, by = 0.1))
+
+# plotting (probeersel) staven naast elkaar
+p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','sampletrans01')])
+p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
+p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
+p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "sampletrans01"="orange"))
+p = p + ggtitle("CC values (Spearman rank) for costs, AR5-data")
+p
+# ggsave(paste("CC_GE_lin.png"),p)
+
+
+# plotting (probeersel) staven op elkaar
+# eerst alle getallen positief maken (door te kwadrateren)
+CC$value <- CC$value*CC$value
+
+q = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','sampletrans01')]) # c('cumuCO2result','cs')]) # 'cumuCO2result' 
+q = q + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="fill")
+q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
+q = q + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "sampletrans01"="orange"))
+q = q + ggtitle("CC values costs, AR5-data")
+q
+
+# ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)
+
 
 # ------- plot van CC waarden tussen cs en andere input
 source("kostenbakjes.R")

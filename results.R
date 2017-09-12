@@ -22,6 +22,7 @@ source("TCRE+SSPnonCO2.R")
 source("kostenbakjes.R")
 source("kostenbakjesDeterministisch.R")
 source("kostenSSP.R")
+source("kostenbakjesAR5tran01toCosts.R")
 
 #--------- maak data per Ttarget ----------------
 
@@ -170,8 +171,39 @@ f.dataframekosten <- function(N,Ttarget,f.seed) {
 }
 
 
+#----- kostenbakjes met [0,1]transformatie -----
+
+source("kostenbakjesAR5tran01toCosts.R")
+
+f.dataframekosten <- function(N,Ttarget,f.seed) {
+  cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
+  
+  sample_en_result.deltaCO2 <- f.cumuCO2result(N,Ttarget,cumuvstemp.sample)
+  
+  kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
+  
+  # herleid costsensitivity
+  #cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+  
+  sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,sampletrans01,kosten.result)
+  
+  # verwijder resultaten buiten bakjes
+  #remove <- c(-1)
+  #aantalMin1 <- vector(mode="numeric", length=0)
+  #waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
+  #aantalMin1 <- c(aantalMin1, length(waarZitMin1))
+  
+  #if (!identical(waarZitMin1, integer(0))) {
+  #  sample_en_result.kosten <- sample_en_result.kosten[-waarZitMin1,]
+  #}
+  
+  return(sample_en_result.kosten)
+}
+
+
 #------------- bundel resultaten kosten ---------------------
 
+# met cs
 deltaCO2 <- NULL
 cs <- NULL
 costs <- NULL
@@ -190,11 +222,32 @@ deltaCO2 = data.table(deltaCO2)
 cs = data.table(cs)
 costs = data.table(costs)
 
+# met sampletrans01
+deltaCO2 <- NULL
+trans01 <- NULL
+costs <- NULL
+for (i in seq(1, 4, by = 0.1)) {
+  data <- f.dataframekosten(N,i,s.seed)
+  print(length(data$cumuCO2result))
+  # print(length(data$cs))
+  deltaCO2 <- cbind(deltaCO2, data$cumuCO2result)
+  trans01 <- cbind(trans01, data$sampletrans01)
+  costs <- cbind(costs, data$kosten.result)
+}
+colnames(deltaCO2) <- as.character(seq(1, 4, by = 0.1))
+colnames(trans01) <- as.character(seq(1, 4, by = 0.1))
+colnames(costs) <- as.character(seq(1, 4, by = 0.1))
+deltaCO2 = data.table(deltaCO2)
+trans01 = data.table(trans01)
+costs = data.table(costs)
+
+
 
 # maak veel histogrammen:
 hist(deltaCO2, breaks = "Scott")
 hist(cs, breaks = "Scott")
 hist(costs, breaks = "Scott")
+hist(trans01, breaks = "Scott")
 
 # maak veel scatterplots
 # lukt nog niet :(
@@ -207,12 +260,20 @@ plot(costs$`3`~cs$`3`, ylab = "Costs")
 plot(costs$`3.4`~cs$`3.4`, ylab = "Costs")
 
 # 4 scatterplots costs vs deltaCO2
+par(mfrow=c(2,2))
 plot(costs$`1.4`~deltaCO2$`1.4`, ylab = "Costs")
 plot(costs$`2`~deltaCO2$`2`, ylab = "Costs")
 plot(costs$`3`~deltaCO2$`3`, ylab = "Costs")
 plot(costs$`3.4`~deltaCO2$`3.4`, ylab = "Costs")
 par(mfrow=c(1,1))
 
+# 4 scatterplots costs vs trans01
+par(mfrow=c(2,2))
+plot(costs$`1.4`~trans01$`1.4`, ylab = "Costs")
+plot(costs$`2`~trans01$`2`, ylab = "Costs")
+plot(costs$`3`~trans01$`3`, ylab = "Costs")
+plot(costs$`3.4`~trans01$`3.4`, ylab = "Costs")
+par(mfrow=c(1,1))
 
 # oud:
 
