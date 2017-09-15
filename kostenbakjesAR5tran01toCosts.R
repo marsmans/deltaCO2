@@ -105,7 +105,7 @@ bakjeNoCosts.max <- 0
 
 #------------ Maak sample [0.1] ------------------
 
-sampletrans01 <- rpert(N, min = 0, mode = 5/6, max = 1)
+sampletrans01 <- rpert(N, min = 0, mode = 1/3, max = 1)
 
 #------------ 'Reken' kosten uit ----------------
 
@@ -246,9 +246,9 @@ f.CCtabel <- function(N,Ttarget, f.seed) {
   
   kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
   # herleid costsensitivity
-  cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+  #cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
   
-  sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
+  sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,sampletrans01,kosten.result)
   
   
   # pearson CC:
@@ -278,9 +278,9 @@ f.cs.CCmatrix <- function(N,f.seed) {
     
     kosten.result <- model.costs(sample_en_result.deltaCO2$cumuCO2result)
     # herleid costsensitivity
-    cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
+    #cs <-kosten.result/sample_en_result.deltaCO2$cumuCO2result
     
-    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,cs,kosten.result)
+    sample_en_result.kosten <- data.frame(sample_en_result.deltaCO2,sampletrans01,kosten.result)
     
     # verwijder resultaten buiten bakjes
     #waarZitMin1 <- which(sample_en_result.kosten$kosten.result %in% remove)
