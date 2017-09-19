@@ -50,11 +50,11 @@ TCREstd2 = (TCREstd05 + TCREstd95)/2
 # artikel Hans Visser: 
 # T2016: 1.01 +- 0.13 (2sigma)
 # verschil in HadCrut + IRW tussen T2016 en T2010: 0.1151
-# Neem dan voor T2010: 1.01 - 0.115 = 0.90 +- 0.13 (2sigma)
-# gemiddelde: 0.90
+# Neem dan voor T2010: 1.01 - 0.115 = 0.895 +- 0.13 (2sigma)
+# gemiddelde: 0.895
 # standaardafwijking: 0.13/2 = 0.065
 
-T2010mean <- 0.90
+T2010mean <- 0.895
 T2010std <- 0.065
 
 

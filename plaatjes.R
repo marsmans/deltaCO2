@@ -28,7 +28,7 @@ source("TCRE+depnonCO2.R")
 
 # plaatje van TCRE en hoe de lijnen zijn gefit
 par(mfrow=c(1,1))
-plot(cumuvstempLL,xlim=c(0,9))
+plot(cumuvstempLL,xlim=c(0,9), ylim=c(0,5))
 abline(fLL)
 points(cumuvstempUL,xlim=c(0,9))
 abline(fUL)
