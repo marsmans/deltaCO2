@@ -69,6 +69,23 @@ nonCO2ssp <- read.csv(file = "./../Databases/ssp_data_update_naar_R.csv", header
 # schaal Gt naar Tt
 nonCO2ssp$CumCO2..GtCO2. <- nonCO2ssp$CumCO2..GtCO2./1000
 
+# nonCO2 forcing vs deltaCO2
+s = ggplot(nonCO2ssp,aes(x=CumCO2..GtCO2.,y=F_nonCO2))
+s = s + geom_point()
+s = s + theme_bw()
+s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(non-CO[2]~forcing~(W/m^2)))
+s = s + coord_cartesian(xlim = c(0,8.5), ylim = c(0,1.8))
+s
+
+#Ftot vs temp
+s = ggplot(nonCO2ssp,aes(x=F_tot,y=Temp...C.))
+s = s + geom_point()
+s = s + theme_bw()
+s = s + labs(x = expression(Total~forcing~(W/m^2)), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
+s = s + coord_cartesian(xlim = c(0,9), ylim = c(0,5.5))
+s
+
+
 #alleen1.5$CumCO2..GtCO2. <- alleen1.5$CumCO2..GtCO2./1000
 
 #reken fractie uit
@@ -91,7 +108,7 @@ tempStijging_door_F_nonCO2.met.avg <- nonCO2ssp$F_nonCO2 * (T_tot.avg/F_tot.avg)
 #fitlijn <- lm(data = nonCO2ssp, tempStijging_door_F_nonCO2 ~ CumCO2..GtCO2.)
 #abline(fitlijn)
 
-# kijken hoe groot de bandbreedte van nonCO2 is:
+# kijken hoe groot de bandbreedte van nonCO2 is met gemiddelde verhouding:
 plot(tempStijging_door_F_nonCO2.met.avg~nonCO2ssp$CumCO2..GtCO2., main = "Temperatuurstijging door F_nonCO2 (gem. verh.)", xlab = "deltaCO2 (TtCO2)", ylab = "T (*C)")
 fitlijn <- lm(data = nonCO2ssp, tempStijging_door_F_nonCO2.met.avg ~ CumCO2..GtCO2.)
 abline(fitlijn)
