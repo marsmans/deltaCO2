@@ -70,21 +70,20 @@ nonCO2ssp <- read.csv(file = "./../Databases/ssp_data_update_naar_R.csv", header
 nonCO2ssp$CumCO2..GtCO2. <- nonCO2ssp$CumCO2..GtCO2./1000
 
 # nonCO2 forcing vs deltaCO2
-s = ggplot(nonCO2ssp,aes(x=CumCO2..GtCO2.,y=F_nonCO2))
-s = s + geom_point()
-s = s + theme_bw()
-s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(non-CO[2]~forcing~(W/m^2)))
-s = s + coord_cartesian(xlim = c(0,8.5), ylim = c(0,1.8))
-s
+#s = ggplot(nonCO2ssp,aes(x=CumCO2..GtCO2.,y=F_nonCO2))
+#s = s + geom_point()
+#s = s + theme_bw()
+#s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(non-CO[2]~forcing~(W/m^2)))
+#s = s + coord_cartesian(xlim = c(0,8.5), ylim = c(0,1.8))
+#s
 
 #Ftot vs temp
-s = ggplot(nonCO2ssp,aes(x=F_tot,y=Temp...C.))
-s = s + geom_point()
-s = s + theme_bw()
-s = s + labs(x = expression(Total~forcing~(W/m^2)), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
-s = s + coord_cartesian(xlim = c(0,9), ylim = c(0,5.5))
-s
-
+#s = ggplot(nonCO2ssp,aes(x=F_tot,y=Temp...C.))
+#s = s + geom_point()
+#s = s + theme_bw()
+#s = s + labs(x = expression(Total~forcing~(W/m^2)), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
+#s = s + coord_cartesian(xlim = c(0,9), ylim = c(0,5.5))
+#s
 
 #alleen1.5$CumCO2..GtCO2. <- alleen1.5$CumCO2..GtCO2./1000
 
@@ -95,12 +94,38 @@ tempStijging_door_F_nonCO2 <- fractie.F_nonCO2F_tot*nonCO2ssp$Temp...C.
 #fractie.alleen1.5 <- alleen1.5$F_nonCO2/alleen1.5$F_tot
 #tempStijging.alleen1.5 <- fractie.alleen1.5*alleen1.5$Temp...C.
 
+#TFnonCO2 vs deltaCO2
+nonCO2ssp <- cbind(nonCO2ssp,tempStijging_door_F_nonCO2)
+
+#s = ggplot(nonCO2ssp,aes(x=CumCO2..GtCO2.,y=tempStijging_door_F_nonCO2))
+#s = s + geom_point()
+#s = s + theme_bw()
+#s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
+#s = s + coord_cartesian(xlim = c(0,8.5), ylim = c(0,1.2))
+#s
+
 # reken gemiddelde uit
 T_tot.avg <- (sum(nonCO2ssp$Temp...C.))/length(nonCO2ssp$Temp...C.)
 F_tot.avg <- (sum(nonCO2ssp$F_tot))/length(nonCO2ssp$F_tot)
 
 # reken fractie uit met gemiddelde verhouding
 tempStijging_door_F_nonCO2.met.avg <- nonCO2ssp$F_nonCO2 * (T_tot.avg/F_tot.avg)
+
+#TFnonCO2 vs deltaCO2
+#nonCO2ssp <- cbind(nonCO2ssp,tempStijging_door_F_nonCO2)
+nonCO2ssp <- cbind(nonCO2ssp,tempStijging_door_F_nonCO2.met.avg)
+nonCO2ssp.gather <- gather(nonCO2ssp, variable, value)
+nonCO2ssp.gather$deltaCO2 <- nonCO2ssp$CumCO2..GtCO2.
+nonCO2ssp.gather <- data.table(nonCO2ssp.gather)
+
+s = ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2','tempStijging_door_F_nonCO2.met.avg')])
+s = s + geom_point(aes(x=deltaCO2,y=value, fill=variable),stat="identity")
+s = s + theme_bw()
+s = s + scale_fill_manual(values=c("tempStijging_door_F_nonCO2"="blue","tempStijging_door_F_nonCO2.met.avg"="yellow"))
+s = s + guides(fill=guide_legend(title=NULL))
+s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
+s = s + coord_cartesian(xlim = c(0,8.5), ylim = c(0,1.2))
+s
 
 # kijken hoe groot de bandbreedte van nonCO2 is:
 #plot(tempStijging_door_F_nonCO2~nonCO2ssp$CumCO2..GtCO2., main = "Temperatuurstijging door F_nonCO2", xlab = "deltaCO2 (TtCO2)", ylab = "T (*C)")
