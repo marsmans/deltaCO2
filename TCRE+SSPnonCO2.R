@@ -118,14 +118,28 @@ nonCO2ssp.gather <- gather(nonCO2ssp, variable, value)
 nonCO2ssp.gather$deltaCO2 <- nonCO2ssp$CumCO2..GtCO2.
 nonCO2ssp.gather <- data.table(nonCO2ssp.gather)
 
-s = ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2','tempStijging_door_F_nonCO2.met.avg')])
-s = s + geom_point(aes(x=deltaCO2,y=value, fill=variable),stat="identity")
+s <- ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2','tempStijging_door_F_nonCO2.met.avg')])
+s = s + geom_point(aes(x=deltaCO2,y=value, shape=variable),stat="identity")
 s = s + theme_bw()
-s = s + scale_fill_manual(values=c("tempStijging_door_F_nonCO2"="blue","tempStijging_door_F_nonCO2.met.avg"="yellow"))
-s = s + guides(fill=guide_legend(title=NULL))
+#s = s + scale_color_manual(values=c("tempStijging_door_F_nonCO2"="blue","tempStijging_door_F_nonCO2.met.avg"="dark green"),
+s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
+                           labels=c("Method 1","Method 2"))
+s = s + guides(shape=guide_legend(title=NULL))
+s = s + theme(legend.justification=c(0.9,0.1), legend.position=c(0.9,0.1), 
+              legend.text = element_text(size = 14))
 s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
 s = s + coord_cartesian(xlim = c(0,8.5), ylim = c(0,1.2))
 s
+
+# nieuwe poging:
+#nonCO2ssp2 <- data.frame(nonCO2ssp$CumCO2..GtCO2.,nonCO2ssp$tempStijging_door_F_nonCO2,nonCO2ssp$tempStijging_door_F_nonCO2.met.avg)
+
+#s2 <- ggplot(nonCO2ssp2)
+#s2 = s2 + geom_point(aes(x=nonCO2ssp.CumCO2..GtCO2.,y=nonCO2ssp.tempStijging_door_F_nonCO2,col="blue"))
+#s2 = s2 + geom_point(aes(x=nonCO2ssp.CumCO2..GtCO2.,y=nonCO2ssp.tempStijging_door_F_nonCO2.met.avg,col="yellow"))
+#s2 = s2 + scale_fill_manual(values=c("nonCO2ssp.tempStijging_door_F_nonCO2"="blue","nonCO2ssp.tempStijging_door_F_nonCO2.met.avg"="yellow"))
+#s2
+
 
 # kijken hoe groot de bandbreedte van nonCO2 is:
 #plot(tempStijging_door_F_nonCO2~nonCO2ssp$CumCO2..GtCO2., main = "Temperatuurstijging door F_nonCO2", xlab = "deltaCO2 (TtCO2)", ylab = "T (*C)")
@@ -138,6 +152,14 @@ plot(tempStijging_door_F_nonCO2.met.avg~nonCO2ssp$CumCO2..GtCO2., main = "Temper
 fitlijn <- lm(data = nonCO2ssp, tempStijging_door_F_nonCO2.met.avg ~ CumCO2..GtCO2.)
 abline(fitlijn)
 
+t <- ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2.met.avg')])
+t = t + geom_point(aes(x=deltaCO2,y=value),stat="identity")
+t = t + geom_smooth(aes(x=deltaCO2,y=value),method = 'lm',formula = y~x, se=F)
+t = t + geom_abline(intercept = coef(fitlijn)[1] - afwijking_nonCO2, slope = coef(fitlijn)[2], color="red")
+t = t + geom_abline(intercept = coef(fitlijn)[1] + afwijking_nonCO2, slope = coef(fitlijn)[2], color="red")
+t = t + theme_bw()
+t = t + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
+t
 
 # hij ligt steeds maximaal ongeveer 0.2 onder of bover de best-fit-lijn, dus
 afwijking_nonCO2 <- 0.23
@@ -148,6 +170,8 @@ abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + afwijking_nonCO2, col = "red
 # hellingshoek best-fit-lijn
 TCRnonCO2 <- coef(fitlijn)[2]
 
+# intercept best-fit-lijn
+TF2010 <- coef(fitlijn)[1]
 
 
 #----------- Maak sample ----------------------
@@ -167,7 +191,7 @@ f.cumuvstemp.sample <- function(N, f.seed) {
   # transformeer random LHS naar LHS met goede parameters
   T2010 <- qnorm(x[,1], mean=T2010mean, sd=T2010std)
   TCRE <- qpert(x[,2], coef(fLL)[2], TCREmean, coef(fUL)[2], shape = 4)
-  nonCO2 <- qpert(x[,3], -1*afwijking_nonCO2, 0, afwijking_nonCO2, shape = 4)
+  nonCO2 <- qpert(x[,3], -1*afwijking_nonCO2 + TF2010, TF2010, afwijking_nonCO2 + TF2010, shape = 4) # gemiddelde niet rond 0 maar rond de 2010 waarde!
   
   
   # bundel in dataframe
