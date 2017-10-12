@@ -19,7 +19,7 @@ punt_rechteLijn <- function(x, x.links, x.rechts, fx.links, fx.rechts) {
 
 #kostenSSP <- read.csv(file = "./../Databases/kostenSSP.csv", header = TRUE, sep = ";")
 kostenSSP <- read.csv(file = "./../Databases/kostenSSPno0.csv", header = TRUE, sep = ";")
-
+kostenSSP2 <- read.csv(file = "./../Databases/kostenSSPno02.csv", header = TRUE, sep = ";")
 
 # schalen naar Tt CO2
 kostenSSP$Cum.CO2 <- kostenSSP$Cum.CO2/1000
@@ -29,6 +29,24 @@ kostenSSP$Cum.CO2 <- kostenSSP$Cum.CO2/1000
 plot(kostenSSP$Cost.Estimate..ktrillion.~kostenSSP$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue", xlim = c(0,6))
 points(kostenSSP$MAC.Costs..ktrillion.~kostenSSP$Cum.CO2, pch = 17, col = "green" )
 points(kostenSSP$Consumption.Loss..ktrillion.~kostenSSP$Cum.CO2, pch = 18, col = "red" )
+
+kostenSSP.gather <- gather(kostenSSP, variable, value)
+kostenSSP.gather$cumuCO2 <- kostenSSP$Cum.CO2
+kostenSSP.gather <- data.table(kostenSSP.gather)
+
+s <- ggplot(kostenSSP.gather[variable %in% c('Cost.Estimate..ktrillion.','MAC.Costs..ktrillion.','Consumption.Loss..ktrillion.')])
+s = s + geom_point(aes(x=cumuCO2,y=value, col=variable),stat="identity")
+s = s + theme_bw()
+s = s + scale_color_manual(values=c("Cost.Estimate..ktrillion."="blue","MAC.Costs..ktrillion."="green", "Consumption.Loss..ktrillion."="red"),
+#s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
+                           labels=c("Carbon price total costs","Area under MAC curve","Consumption loss"))
+s = s + guides(col=guide_legend(title=NULL))
+s = s + theme(legend.justification=c(0.9,0.65), legend.position=c(0.9,0.65), 
+              legend.text = element_text(size = 12))
+s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = "Mitigation costs (Ktrillion US$2005)")
+s = s + coord_cartesian(xlim = c(0,5), ylim = c(0,0.25))
+s
+
 
 #plot
 #plot(kostenSSPno0$Cost.Estimate..ktrillion.~kostenSSPno0$Cum.CO2, xlab = "delta CO2 (Tt)", ylab = "", pch = 16, col = "blue")
