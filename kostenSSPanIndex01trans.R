@@ -18,8 +18,8 @@ punt_rechteLijn <- function(x, x.links, x.rechts, fx.links, fx.rechts) {
 #---------------- data SSP inlezen ----------------------
 
 #kostenSSP <- read.csv(file = "./../Databases/kostenSSP.csv", header = TRUE, sep = ";")
-kostenSSP <- read.csv(file = "./../Databases/kostenSSPno0.csv", header = TRUE, sep = ";")
-kostenSSP2 <- read.csv(file = "./../Databases/kostenSSPno02.csv", header = TRUE, sep = ";")
+kostenSSP1 <- read.csv(file = "./../Databases/kostenSSPno0.csv", header = TRUE, sep = ";")
+kostenSSP <- read.csv(file = "./../Databases/kostenSSPno02.csv", header = TRUE, sep = ";")
 
 # schalen naar Tt CO2
 kostenSSP$Cum.CO2 <- kostenSSP$Cum.CO2/1000
