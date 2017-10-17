@@ -152,6 +152,14 @@ plot(tempStijging_door_F_nonCO2.met.avg~nonCO2ssp$CumCO2..GtCO2., main = "Temper
 fitlijn <- lm(data = nonCO2ssp, tempStijging_door_F_nonCO2.met.avg ~ CumCO2..GtCO2.)
 abline(fitlijn)
 
+
+
+# hij ligt steeds maximaal ongeveer 0.2 onder of bover de best-fit-lijn, dus
+afwijking_nonCO2 <- 0.23
+
+abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] - afwijking_nonCO2, col = "red")
+abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + afwijking_nonCO2, col = "red")
+
 t <- ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2.met.avg')])
 t = t + geom_point(aes(x=deltaCO2,y=value),stat="identity")
 t = t + geom_smooth(aes(x=deltaCO2,y=value),method = 'lm',formula = y~x, se=F)
@@ -161,11 +169,6 @@ t = t + theme_bw()
 t = t + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
 t
 
-# hij ligt steeds maximaal ongeveer 0.2 onder of bover de best-fit-lijn, dus
-afwijking_nonCO2 <- 0.23
-
-abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] - afwijking_nonCO2, col = "red")
-abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + afwijking_nonCO2, col = "red")
 
 # hellingshoek best-fit-lijn
 TCRnonCO2 <- coef(fitlijn)[2]

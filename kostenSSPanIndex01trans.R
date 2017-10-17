@@ -120,6 +120,26 @@ plot(kostenSSP.indexed$Cost.Estimate..ktrillion.~kostenSSP.indexed$Cum.CO2, xlab
 points(kostenSSP.indexed$MAC.Costs..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 17, col = "green" )
 points(kostenSSP.indexed$Consumption.Loss..ktrillion.~kostenSSP.indexed$Cum.CO2, pch = 18, col = "red" )
 
+# ggplot
+kostenSSP.ind.gather <- gather(kostenSSP.indexed, variable, value)
+kostenSSP.ind.gather$cumuCO2 <- kostenSSP.indexed$Cum.CO2
+kostenSSP.ind.gather <- data.table(kostenSSP.ind.gather)
+
+s <- ggplot(kostenSSP.ind.gather[variable %in% c('Cost.Estimate..ktrillion.','MAC.Costs..ktrillion.','Consumption.Loss..ktrillion.')])
+s = s + geom_point(aes(x=cumuCO2,y=value, col=variable),stat="identity")
+s = s + theme_bw()
+s = s + scale_color_manual(values=c("Cost.Estimate..ktrillion."="blue","MAC.Costs..ktrillion."="green", "Consumption.Loss..ktrillion."="red"),
+                           #s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
+                           labels=c("Carbon price total costs","Area under MAC curve","Consumption loss"))
+s = s + guides(col=guide_legend(title=NULL))
+s = s + theme(legend.justification=c(0.9,0.65), legend.position=c(0.9,0.65), 
+              legend.text = element_text(size = 12))
+s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Cost~index~(1.3~TtCO[2]==100)))
+s = s + coord_cartesian(xlim = c(0,5)) #, ylim = c(0,10))
+s
+
+
+
 # maak de bakjes geindexeerd
 bakje1.indexed <- bakje1
 bakje1.indexed$Cost.Estimate..ktrillion. <- bakje1.indexed$Cost.Estimate..ktrillion./index.CostEstimate
