@@ -49,15 +49,18 @@ data3.test$Ttarget <- 3
 data1.523.test <- rbind(data1.5.test,data2.test,data3.test)
 data1.523.test <- data.table(data1.523.test)
 
+plabels <- c(T2010 = "T2010", TCRE = "TCRE", nonCO2 = "TFnonCO2,2010", sampletrans01 = "t")
+
 # test plot
 sp <- ggplot(data1.523.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
-sp = sp + geom_point()
-sp = sp + facet_grid(parameter ~ Ttarget) #, scales="free", space="free"
+sp = sp + geom_jitter(alpha = 0.01)
+sp = sp + facet_grid(parameter ~ Ttarget, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp = sp + theme_bw()
 sp
 
 # test plot omgedraaid
 ps <- ggplot(data1.523.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
-ps = ps + geom_point()
+ps = ps + geom_point(aes(shape=16))
 ps = ps + facet_grid(Ttarget ~ parameter) #, scales="free", space="free"
 ps
 
