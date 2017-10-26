@@ -39,12 +39,15 @@ data3.test <- subset(data3, select = -f.Ttarget)
 # Deze is goed volgens mij!:
 data1.5.test <- melt(data1.5.test, id.vars = 'kosten.result', variable.name = 'parameter')
 data1.5.test$Ttarget <- 1.5
+data1.5.test <- data.table(data1.5.test)
 
 data2.test <- melt(data2.test, id.vars = 'kosten.result', variable.name = 'parameter')
 data2.test$Ttarget <- 2
+data2.test <- data.table(data2.test)
 
 data3.test <- melt(data3.test, id.vars = 'kosten.result', variable.name = 'parameter')
 data3.test$Ttarget <- 3
+data3.test <- data.table(data3.test)
 
 data1.523.test <- rbind(data1.5.test,data2.test,data3.test)
 data1.523.test <- data.table(data1.523.test)
@@ -54,7 +57,8 @@ plabels <- c(T2010 = "T2010", TCRE = "TCRE", nonCO2 = "TFnonCO2,2010", sampletra
 # test plot
 sp <- ggplot(data1.523.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
 sp = sp + geom_jitter(alpha = 0.01)
-sp = sp + facet_grid(parameter ~ Ttarget, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp = sp + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 sp = sp + theme_bw()
 sp
 
@@ -63,6 +67,32 @@ ps <- ggplot(data1.523.test[parameter %in% c('T2010','TCRE','nonCO2','sampletran
 ps = ps + geom_point(aes(shape=16))
 ps = ps + facet_grid(Ttarget ~ parameter) #, scales="free", space="free"
 ps
+
+
+# scatterplots one Ttarget
+sp1.5 <- ggplot(data1.5.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
+sp1.5 = sp1.5 + geom_jitter(alpha = 0.01)
+sp1.5 = sp1.5 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp1.5 = sp1.5 + theme_bw()
+sp1.5 = sp1.5 + labs(x = NULL, y = "Mitigation costs (%GDP)")
+sp1.5
+
+sp2 <- ggplot(data2.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
+sp2 = sp2 + geom_jitter(alpha = 0.01)
+sp2 = sp2 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp2 = sp2 + theme_bw()
+sp2 = sp2 + labs(x = NULL, y = NULL)
+sp2
+
+sp3 <- ggplot(data3.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
+sp3 = sp3 + geom_jitter(alpha = 0.01)
+sp3 = sp3 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp3 = sp3 + theme_bw()
+sp3 = sp3 + labs(x = NULL, y = NULL)
+sp3
 
 
 colnames(data1.5) <- paste("1.5:",colnames(data1.5))
@@ -275,4 +305,76 @@ multiplot(T20101.5, T20102, T20103, TCRE1.5, TCRE2, TCRE3, FnCO21.5, FnCO22, FnC
 
 # 1x3
 multiplot(T20101.5, T20102, T20103, layout = matrix(c(1,2,3), nrow=1))
+
+
+
+#-------------- SPs for carbon budget ---------
+
+# maak data
+data1.5 <- f.dataframekosten(N,1.5,s.seed)
+data2 <- f.dataframekosten(N,2,s.seed)
+data3 <- f.dataframekosten(N,3,s.seed)
+
+data1.5.test <- subset(data1.5, select = -f.Ttarget)
+data2.test <- subset(data2, select = -f.Ttarget)
+data3.test <- subset(data3, select = -f.Ttarget)
+
+# Deze is goed volgens mij!:
+data1.5.cb <- melt(data1.5.test, id.vars = 'cumuCO2result', variable.name = 'parameter')
+data1.5.cb$Ttarget <- 1.5
+data1.5.cb <- data.table(data1.5.cb)
+
+data2.cb <- melt(data2.test, id.vars = 'cumuCO2result', variable.name = 'parameter')
+data2.cb$Ttarget <- 2
+data2.cb <- data.table(data2.cb)
+
+data3.cb <- melt(data3.test, id.vars = 'cumuCO2result', variable.name = 'parameter')
+data3.cb$Ttarget <- 3
+data3.cb <- data.table(data3.cb)
+
+data1.523.cb <- rbind(data1.5.cb,data2.cb,data3.cb)
+data1.523.cb <- data.table(data1.523.cb)
+
+plabels.cb <- c(T2010 = "T2010", TCRE = "TCRE", nonCO2 = "TFnonCO2,2010")
+
+# test plot
+spcb <- ggplot(data1.523.cb[parameter %in% c('T2010','TCRE','nonCO2')], aes(x=value, y=cumuCO2result))
+spcb = spcb + geom_jitter(alpha = 0.01)
+spcb = spcb + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+spcb = spcb + theme_bw()
+spcb
+
+# test plot omgedraaid
+pscb <- ggplot(data1.523.cb[parameter %in% c('T2010','TCRE','nonCO2')], aes(x=value, y=cumuCO2result))
+pscb = pscb + geom_point(aes(shape=16))
+pscb = pscb + facet_grid(Ttarget ~ parameter) #, scales="free", space="free"
+pscb
+
+
+# scatterplots one Ttarget
+sp1.5cb <- ggplot(data1.5.cb[parameter %in% c('T2010','TCRE','nonCO2')], aes(x=value, y=cumuCO2result))
+sp1.5cb = sp1.5cb + geom_jitter(alpha = 0.01)
+sp1.5cb = sp1.5cb + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp1.5cb = sp1.5cb + theme_bw()
+sp1.5cb = sp1.5cb + labs(x = NULL, y = "Mitigation costs (%GDP)")
+sp1.5cb
+
+sp2cb <- ggplot(data2.cb[parameter %in% c('T2010','TCRE','nonCO2')], aes(x=value, y=cumuCO2result))
+sp2cb = sp2cb + geom_jitter(alpha = 0.01)
+sp2cb = sp2cb + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp2cb = sp2cb + theme_bw()
+sp2cb = sp2cb + labs(x = NULL, y = NULL)
+sp2cb
+
+sp3cb <- ggplot(data3.cb[parameter %in% c('T2010','TCRE','nonCO2')], aes(x=value, y=cumuCO2result))
+sp3cb = sp3cb + geom_jitter(alpha = 0.01)
+sp3cb = sp3cb + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp3cb = sp3cb + theme_bw()
+sp3cb = sp3cb + labs(x = NULL, y = NULL)
+sp3cb
+
 
