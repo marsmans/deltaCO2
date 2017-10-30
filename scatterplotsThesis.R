@@ -31,10 +31,20 @@ f.dataframekosten <- function(N,Ttarget,f.seed) {
 data1.5 <- f.dataframekosten(N,1.5,s.seed)
 data2 <- f.dataframekosten(N,2,s.seed)
 data3 <- f.dataframekosten(N,3,s.seed)
+data <- f.dataframekosten(N,4,s.seed)
+
+
+# bij hoeveel zijn de kosten 0?
+hoeveel0 <- function(data){
+  waarZit0 <- which(data$kosten.result %in% 0)
+  return(length(waarZit0))
+}
+
 
 data1.5.test <- subset(data1.5, select = -f.Ttarget)
 data2.test <- subset(data2, select = -f.Ttarget)
 data3.test <- subset(data3, select = -f.Ttarget)
+data.test <- subset(data, select = -f.Ttarget)
 
 # Deze is goed volgens mij!:
 data1.5.test <- melt(data1.5.test, id.vars = 'kosten.result', variable.name = 'parameter')
@@ -48,6 +58,10 @@ data2.test <- data.table(data2.test)
 data3.test <- melt(data3.test, id.vars = 'kosten.result', variable.name = 'parameter')
 data3.test$Ttarget <- 3
 data3.test <- data.table(data3.test)
+
+data.test <- melt(data.test, id.vars = 'kosten.result', variable.name = 'parameter')
+data.test$Ttarget <- 4
+data.test <- data.table(data.test)
 
 data1.523.test <- rbind(data1.5.test,data2.test,data3.test)
 data1.523.test <- data.table(data1.523.test)
@@ -94,6 +108,14 @@ sp3 = sp3 + theme_bw()
 sp3 = sp3 + labs(x = NULL, y = NULL)
 sp3
 
+
+spd <- ggplot(data.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
+spd = spd + geom_jitter(alpha = 0.1)
+spd = spd + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+spd = spd + theme_bw()
+spd = spd + labs(x = NULL, y = NULL)
+spd
 
 colnames(data1.5) <- paste("1.5:",colnames(data1.5))
 colnames(data2) <- paste("2:",colnames(data2))

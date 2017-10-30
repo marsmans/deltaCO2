@@ -401,6 +401,8 @@ source("kostenbakjesDeterministisch.R")
 
 source("kostenSSP.R")
 source("kostenSSPandereindex.R")
+source("kostenbakjesAR5tran01toCosts.R")
+
 
 # krijgt een CC matrix
 s.seed <- 21
