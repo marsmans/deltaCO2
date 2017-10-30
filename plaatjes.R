@@ -448,7 +448,7 @@ CCdata = data.table(CCmat[[1]])
 # maak er een 'werkbaarder' format van
 CC <-gather(CCdata,variable,value,c('T2010','TCRE','nonCO2','cumuCO2result','sampletrans01'))
 CC=data.table(CC)
-CC$Ttarget <- as.character(seq(1.4, 3.4, by = 0.1))
+CC$Ttarget <- as.character(seq(1, 3.2, by = 0.1))
 
 # plotting (probeersel) staven naast elkaar
 p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','sampletrans01')])
