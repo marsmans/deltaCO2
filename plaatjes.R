@@ -106,7 +106,7 @@ s <- ggplot(kostenSSP.ind.gather[variable %in% c('Cost.Estimate..ktrillion.','MA
 s = s + geom_point(aes(x=cumuCO2,y=value),stat="identity")
 s = s + theme_bw()
 #s = s + scale_color_manual(values=c("Cost.Estimate..ktrillion."="blue","MAC.Costs..ktrillion."="green", "Consumption.Loss..ktrillion."="red"),
-                           #s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
+#s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
 #                           labels=c("Carbon price total costs","Area under MAC curve","Consumption loss"))
 s = s + guides(col=guide_legend(title=NULL))
 s = s + theme(legend.justification=c(0.9,0.65), legend.position=c(0.9,0.65), 
@@ -467,8 +467,10 @@ CC$value <- CC$value*CC$value
 q = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','sampletrans01')]) # c('cumuCO2result','cs')]) # 'cumuCO2result' 
 q = q + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="fill")
 q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
-q = q + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "sampletrans01"="orange"))
+q = q + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "sampletrans01"="orange"),
+                          labels=c("T2010","TCRE","TFnonCO2","t","s","q"))
 q = q + ggtitle("CC values costs, AR5-data")
+q = q + labs(x = "Ttarget", y = expression(r^2))
 q
 
 # ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)
