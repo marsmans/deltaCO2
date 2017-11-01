@@ -382,7 +382,7 @@ f.costs.CCmatrix <- function(N,f.seed) {
   
   cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
   
-  for (i in seq(1.4, 3.4, by = 0.1)) {
+  for (i in seq(1, 4, by = 0.1)) {
     # print(i)
     sample_en_result.deltaCO2 <- f.cumuCO2result(N,i,cumuvstemp.sample)
     
@@ -409,8 +409,8 @@ f.costs.CCmatrix <- function(N,f.seed) {
     
     teller <- teller + 1
   }
-  rownames(CCmatrixP) <- as.character(seq(1.4, 3.4, by = 0.1))
-  rownames(CCmatrixS) <- as.character(seq(1.4, 3.4, by = 0.1))
+  rownames(CCmatrixP) <- as.character(seq(1, 4, by = 0.1))
+  rownames(CCmatrixS) <- as.character(seq(1, 4, by = 0.1))
   
   return(list(CCmatrixP,CCmatrixS))
 }
@@ -453,7 +453,7 @@ f.cs.CCmatrix <- function(N,f.seed) {
   
   cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
   
-  for (i in seq(1.4, 3.4, by = 0.1)) {
+  for (i in seq(1, 4, by = 0.1)) {
     # print(i)
     sample_en_result.deltaCO2 <- f.cumuCO2result(N,i,cumuvstemp.sample)
     
@@ -480,8 +480,8 @@ f.cs.CCmatrix <- function(N,f.seed) {
     
     teller <- teller + 1
   }
-  rownames(CCmatrixP) <- as.character(seq(1.4, 3.4, by = 0.1))
-  rownames(CCmatrixS) <- as.character(seq(1.4, 3.4, by = 0.1))
+  rownames(CCmatrixP) <- as.character(seq(1, 4, by = 0.1))
+  rownames(CCmatrixS) <- as.character(seq(1, 4, by = 0.1))
   
   return(list(CCmatrixP,CCmatrixS))
 }

@@ -66,6 +66,10 @@ data.test <- data.table(data.test)
 data1.523.test <- rbind(data1.5.test,data2.test,data3.test)
 data1.523.test <- data.table(data1.523.test)
 
+
+
+
+
 plabels <- c(T2010 = "T2010", TCRE = "TCRE", nonCO2 = "TFnonCO2,2010", sampletrans01 = "t")
 
 # test plot
@@ -399,4 +403,41 @@ sp3cb = sp3cb + theme_bw()
 sp3cb = sp3cb + labs(x = NULL, y = NULL)
 sp3cb
 
+
+
+
+#---------- Alle Ttarget van 1 tot 4 ------------------
+source("kostenbakjesAR5tran01toCosts.R")
+source("kostenSSPanIndex01trans.R")
+
+# nu geautomatiseerd voor Ttarget van 1 tot 4 *C
+data.bundel <- NULL
+for (i in seq(1, 4, by = 0.1)) {
+  data <- f.dataframekosten(N,i,s.seed)
+  data <- subset(data, select = -f.Ttarget)
+  #melt
+  data <- melt(data, id.vars = 'kosten.result', variable.name = 'parameter')
+  data$Ttarget <- i
+  data <- data.table(data)
+  data.bundel <- rbind(data.bundel,data)
+  data.bundel <- data.table(data.bundel)
+}
+data.bundel <- data.table(data.bundel)
+
+# plaatje van cumuCO2 vs costs
+mc14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=kosten.result, colour=Ttarget))
+mc14 = mc14 + geom_jitter(alpha = 0.01)
+mc14 = mc14 + scale_color_gradientn(colours = rainbow(30))
+mc14 = mc14 + theme_bw()
+mc14 = mc14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Cost~index~(1.3~TtCO[2]==1))) 
+mc14
+
+
+# plaatje van cumuCO2 vs Ttarget
+cb14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=Ttarget))
+cb14 = cb14 + geom_jitter(alpha = 0.05)
+cb14 = cb14 + scale_color_gradientn(colours = rainbow(30))
+cb14 = cb14 + theme_bw()
+cb14 = cb14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~relative~to~p.i.~( degree*C))) 
+cb14
 
