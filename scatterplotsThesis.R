@@ -435,7 +435,7 @@ mc14
 
 # plaatje van cumuCO2 vs Ttarget
 cb14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=Ttarget))
-cb14 = cb14 + geom_jitter(alpha = 0.05)
+cb14 = cb14 + geom_point(alpha = 0.05) # geom_jitter?
 cb14 = cb14 + scale_color_gradientn(colours = rainbow(30))
 cb14 = cb14 + theme_bw()
 cb14 = cb14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~relative~to~p.i.~( degree*C))) 
