@@ -67,10 +67,8 @@ data1.523.test <- rbind(data1.5.test,data2.test,data3.test)
 data1.523.test <- data.table(data1.523.test)
 
 
-
-
-
 plabels <- c(T2010 = "T2010", TCRE = "TCRE", nonCO2 = "TFnonCO2,2010", sampletrans01 = "t")
+
 
 # test plot
 sp <- ggplot(data1.523.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
@@ -87,13 +85,15 @@ ps = ps + facet_grid(Ttarget ~ parameter) #, scales="free", space="free"
 ps
 
 
+##### Deze gebruikt in SA chapter:
+
 # scatterplots one Ttarget
 sp1.5 <- ggplot(data1.5.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
 sp1.5 = sp1.5 + geom_jitter(alpha = 0.01)
 sp1.5 = sp1.5 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 sp1.5 = sp1.5 + theme_bw()
-sp1.5 = sp1.5 + labs(x = NULL, y = "Mitigation costs (%GDP)")
+sp1.5 = sp1.5 + labs(x = NULL, y = expression(Cost~index~(1.3~TtCO[2]==1))) #"Mitigation costs (%GDP)")
 sp1.5
 
 sp2 <- ggplot(data2.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
@@ -114,7 +114,7 @@ sp3
 
 
 spd <- ggplot(data.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
-spd = spd + geom_jitter(alpha = 0.1)
+spd = spd + geom_jitter(alpha = 0.01)
 spd = spd + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 spd = spd + theme_bw()
