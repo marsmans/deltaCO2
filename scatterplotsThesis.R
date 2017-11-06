@@ -121,13 +121,24 @@ spd = spd + theme_bw()
 spd = spd + labs(x = NULL, y = NULL)
 spd
 
+# extra Ttarget: 2
+sp1.5 <- ggplot(data1.5.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
+sp1.5 = sp1.5 + geom_jitter(alpha = 0.01)
+sp1.5 = sp1.5 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+#sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
+sp1.5 = sp1.5 + theme_bw()
+sp1.5 = sp1.5 + labs(x = NULL, y = expression(Cost~index~(1.3~TtCO[2]==1))) #"Mitigation costs (%GDP)")
+sp1.5
+
+
+
+#
 colnames(data1.5) <- paste("1.5:",colnames(data1.5))
 colnames(data2) <- paste("2:",colnames(data2))
 colnames(data3) <- paste("3:",colnames(data3))
 
 data1.523 <- cbind(data1.5,data2,data3)
 data1.523 <- data.table(data1.523)
-
 
 
 # maak plots 1
