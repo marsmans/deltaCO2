@@ -93,7 +93,7 @@ sp1.5 = sp1.5 + geom_jitter(alpha = 0.01)
 sp1.5 = sp1.5 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 sp1.5 = sp1.5 + theme_bw()
-sp1.5 = sp1.5 + labs(x = NULL, y = expression(Cost~index~(1.3~TtCO[2]==1))) #"Mitigation costs (%GDP)")
+sp1.5 = sp1.5 + labs(y = "Mitigation costs (%GDP)") #expression(Cost~index~(1.3~TtCO[2]==1))) #)
 sp1.5
 
 sp2 <- ggplot(data2.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
@@ -101,7 +101,7 @@ sp2 = sp2 + geom_jitter(alpha = 0.01)
 sp2 = sp2 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 sp2 = sp2 + theme_bw()
-sp2 = sp2 + labs(x = NULL, y = NULL)
+sp2 = sp2 + labs(y = NULL)
 sp2
 
 sp3 <- ggplot(data3.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
@@ -109,7 +109,7 @@ sp3 = sp3 + geom_jitter(alpha = 0.01)
 sp3 = sp3 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 sp3 = sp3 + theme_bw()
-sp3 = sp3 + labs(x = NULL, y = NULL)
+sp3 = sp3 + labs(y = NULL)
 sp3
 
 
@@ -417,13 +417,13 @@ sp3cb
 
 
 
-#---------- Alle Ttarget van 1 tot 4 ------------------
+#---------- Alle Ttarget van 1.5 tot 4 ------------------
 source("kostenbakjesAR5tran01toCosts.R")
 source("kostenSSPanIndex01trans.R")
 
-# nu geautomatiseerd voor Ttarget van 1 tot 4 *C
+# nu geautomatiseerd voor Ttarget van 1.5 tot 4 *C
 data.bundel <- NULL
-for (i in seq(1, 4, by = 0.1)) {
+for (i in seq(1.5, 4, by = 0.1)) {
   data <- f.dataframekosten(N,i,s.seed)
   data <- subset(data, select = -f.Ttarget)
   #melt
@@ -435,20 +435,22 @@ for (i in seq(1, 4, by = 0.1)) {
 }
 data.bundel <- data.table(data.bundel)
 
+#UA
 # plaatje van cumuCO2 vs costs
 mc14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=kosten.result, colour=Ttarget))
 mc14 = mc14 + geom_jitter(alpha = 0.01)
 mc14 = mc14 + scale_color_gradientn(colours = rainbow(30))
 mc14 = mc14 + theme_bw()
-mc14 = mc14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Cost~index~(1.3~TtCO[2]==1))) 
+mc14 = mc14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Cost~index~(1.3~TtCO[2]==1))) #"Mitigation Costs (%GDP)") # 
 mc14
 
-
+#UA
 # plaatje van cumuCO2 vs Ttarget
 cb14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=Ttarget))
 cb14 = cb14 + geom_point(alpha = 0.05) # geom_jitter?
 cb14 = cb14 + scale_color_gradientn(colours = rainbow(30))
 cb14 = cb14 + theme_bw()
 cb14 = cb14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~relative~to~p.i.~( degree*C))) 
+cb14 = cb14 + coord_cartesian(ylim = c(1, 4))
 cb14
 

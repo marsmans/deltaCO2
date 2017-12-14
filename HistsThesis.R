@@ -132,3 +132,16 @@ hcb = hcb + facet_grid(database ~ Ttarget, scales = "free") #labeller=labeller(p
 hcb = hcb + theme_bw()
 hcb = hcb + labs(x = "Mitigation Costs")
 hcb
+
+
+
+
+# histogram t
+
+hcb <- ggplot()
+hcb = hcb + geom_histogram(aes(sampletrans01),bins = 30)
+#hcb = hcb + facet_grid(. ~ Ttarget, labeller=labeller(parameter = plabels), scales="free", space="free")
+hcb = hcb + theme_bw()
+hcb = hcb + labs(x = "t")
+hcb
+

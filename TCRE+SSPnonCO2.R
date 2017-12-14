@@ -163,6 +163,7 @@ abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + afwijking_nonCO2, col = "red
 t <- ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2.met.avg')])
 t = t + geom_point(aes(x=deltaCO2,y=value),stat="identity")
 t = t + geom_smooth(aes(x=deltaCO2,y=value),method = 'lm',formula = y~x, se=F)
+t = t + geom_abline(intercept = coef(fitlijn)[1], slope = coef(fitlijn)[2], color="blue")
 t = t + geom_abline(intercept = coef(fitlijn)[1] - afwijking_nonCO2, slope = coef(fitlijn)[2], color="red")
 t = t + geom_abline(intercept = coef(fitlijn)[1] + afwijking_nonCO2, slope = coef(fitlijn)[2], color="red")
 t = t + theme_bw()
