@@ -454,3 +454,27 @@ cb14 = cb14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2
 cb14 = cb14 + coord_cartesian(ylim = c(1, 4))
 cb14
 
+
+# plaatje van IPCC wolken, roze en grijs, over modelresultaten
+# hoge TCRE, roze:
+y_UL_roze <- 1.678
+y_LL_roze <- 0.709
+
+y_UL_grijs <- 1.488
+y_LL_grijs <- 0.597
+
+#UA
+# plaatje van cumuCO2 vs Ttarget
+cb14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=Ttarget))
+cb14 = cb14 + geom_point(alpha = 0.05) # geom_jitter?
+cb14 = cb14 + scale_color_gradientn(colours = rainbow(30))
+cb14 = cb14 + theme_bw()
+#cb14 = cb14 + geom_abline(intercept = y_UL_roze, slope = coef(fUL)[2], color="pink")
+#cb14 = cb14 + geom_abline(intercept = y_LL_roze, slope = coef(fLL)[2], color="pink")
+cb14 = cb14 + geom_abline(intercept = y_UL_grijs, slope = coef(fUL)[2], color="gray")
+cb14 = cb14 + geom_abline(intercept = y_LL_grijs, slope = coef(fLL)[2], color="gray")
+cb14 = cb14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~relative~to~p.i.~( degree*C))) 
+cb14 = cb14 + coord_cartesian(ylim = c(0, 4))
+cb14 = cb14 + ggtitle("Modelresultaten + grijze IPCC wolk")
+cb14
+

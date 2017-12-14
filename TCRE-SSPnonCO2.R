@@ -217,7 +217,7 @@ f.cumuvstemp.sample <- function(N, f.seed) {
 #----------- Define model ---------------------
 
 oneRun <- function(Ttarget,T2010,TCRE,nonCO2) {
-  return((Ttarget - T2010 - nonCO2)/(TCRE + TCRnonCO2)) # ik had eerst + nonCO2!!!
+  return((Ttarget - T2010)/(TCRE)) # ik had eerst + nonCO2!!!
 }
 
 

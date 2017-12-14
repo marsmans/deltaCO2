@@ -1,0 +1,205 @@
+
+###########################
+##########
+
+PROJShares=subset(LIMITS, Variable %in% c("Secondary Energy|Electricity",
+                                       "Secondary Energy|Electricity|Solar|PV",
+                                       "Secondary Energy|Electricity|Solar|CSP",
+                                       "Secondary Energy|Electricity|Wind",
+                                       "Secondary Energy|Electricity|Biomass|w/ CCS",
+                                       "Secondary Energy|Electricity|Biomass|w/o CCS",
+                                       "Secondary Energy|Electricity|Nuclear",
+                                       "Secondary Energy|Electricity|Coal|w/ CCS",
+                                       "Secondary Energy|Electricity|Coal|w/o CCS",
+                                       "Secondary Energy|Electricity|Gas|w/ CCS",
+                                       "Secondary Energy|Electricity|Gas|w/o CCS",
+                                       "Secondary Energy|Electricity|Oil|w/ CCS",
+                                       "Secondary Energy|Electricity|Oil|w/o CCS") & Year %in% c("2050"))
+
+
+PROJShares=data.table(PROJShares)
+
+PROJShares=subset(PROJShares, !value=="0")
+PROJShares=spread(PROJShares, Variable, value)
+setnames(PROJShares, "Secondary Energy|Electricity", "Total")
+setnames(PROJShares, "Secondary Energy|Electricity|Solar|PV", "PV")
+setnames(PROJShares, "Secondary Energy|Electricity|Solar|CSP", "CSP")
+setnames(PROJShares, "Secondary Energy|Electricity|Wind", "Wind")
+setnames(PROJShares, "Secondary Energy|Electricity|Biomass|w/ CCS", "BiomassCCS")
+setnames(PROJShares, "Secondary Energy|Electricity|Biomass|w/o CCS", "BiomassnoCCS")
+setnames(PROJShares, "Secondary Energy|Electricity|Nuclear", "Nuclear")
+setnames(PROJShares, "Secondary Energy|Electricity|Coal|w/ CCS", "CoalCCS")
+setnames(PROJShares, "Secondary Energy|Electricity|Coal|w/o CCS", "CoalnoCCS")
+setnames(PROJShares, "Secondary Energy|Electricity|Gas|w/ CCS", "GasCCS")
+setnames(PROJShares, "Secondary Energy|Electricity|Gas|w/o CCS", "GasnoCCS")
+setnames(PROJShares, "Secondary Energy|Electricity|Oil|w/ CCS", "OilCCS")
+setnames(PROJShares, "Secondary Energy|Electricity|Oil|w/o CCS", "OilnoCCS")
+PROJShares = PROJShares %>% mutate(FossilCCS=(CoalCCS+GasCCS), FossilnoCCS=(CoalnoCCS+GasnoCCS))
+PROJShares=gather(PROJShares, Variable, value, c(PV, CSP, Wind, BiomassCCS, BiomassnoCCS, Nuclear, FossilCCS, FossilnoCCS))
+PROJShares=subset(PROJShares, select=c(model, Scenario, Region, Unit, Year, Total, Variable, value))
+PROJSharescalc=PROJShares %>% mutate(Share=(value/Total)*100)
+## Ranking on share in electricity production
+PROJSharescalc=data.table(PROJSharescalc)
+PROJSharescalcrank=PROJSharescalc[,Rank:=rank(-Share,ties.method="first"),by=c("Scenario", "model")]
+PROJSharescalcrank$Route <- "IAMs"
+
+# Technology order based on the average outcome for LIMITS IAMs
+PROJSharescalcrank2= data.table(PROJSharescalcrank)
+PROJSharescalcrankmean=PROJSharescalcrank2[,median(Share, na.rm=T), by=c("Scenario", "Year", "Variable")]
+PROJSharescalcrankmeanrank= PROJSharescalcrankmean[,Rank:=rank(-V1,ties.method="first"),by=c("Scenario")]
+PROJSharescalcrankmeanrank=subset(PROJSharescalcrankmeanrank, select=c("Scenario", "Year", "Variable", "Rank"), Scenario=="LIMITS4")
+####
+write.table(PROJSharescalcrankmean,  "TECH_SURVEY_IAM_SHARE_AND_RANK_450_AVERAGE.csv", sep=";", dec=",", row.names=FALSE)
+#################################################################
+#  COMPARING
+#################################################################
+# Now including model ranking, and on the ranking of  LIMITS 450
+# Change ordering of x-axis order
+INPUTnumericscen.Q45$Question <- factor(INPUTnumericscen.Q45$Question, levels=c("Fossil+CCS", "Wind", "Nuclear", "PV",  "Bioenergy+CCS", "Fossil", "CSP", "Bioenergy"))
+INPUTnumericscen.Q45$Scenario <- factor(INPUTnumericscen.Q45$Scenario, levels=c("Baseline", "2 Degrees")) 
+# Change ordering of x-axis order
+PROJSharescalcrank$Scenario <- factor(PROJSharescalcrank$Scenario, levels=c("LIMITS1", "LIMITS4"), labels=c("Baseline", "2 Degrees"))
+PROJSharescalcrank$Variable<- factor(PROJSharescalcrank$Variable, levels=c("FossilCCS",  "Wind", "Nuclear", "PV", "BiomassCCS", "FossilnoCCS", "CSP","BiomassnoCCS"), labels=c("Fossil+CCS", "Wind", "Nuclear", "PV",  "Bioenergy+CCS", "Fossil", "CSP", "Bioenergy"))
+setnames(PROJSharescalcrank, "Variable", "Question")
+
+PROJSharescalcrank=subset(PROJSharescalcrank, select=c("model", "Scenario", "Question", "Rank", "Route"))
+setnames(PROJSharescalcrank, "Rank", "value")
+setnames(PROJSharescalcrank, "model", "V5")
+
+INPUTnumericscen.Q45=subset(INPUTnumericscen.Q45, select=c("Route", "Question", "Scenario", "V5", "value"))
+Q45IAMcompare = rbind(PROJSharescalcrank,INPUTnumericscen.Q45)
+
+
+
+## Adding new count
+SCENCOUNTQ45=data.table(Q45IAMcompare)
+SCENCOUNTQ45=SCENCOUNTQ45[,list(count=length(V5)), by=c('Route', 'Question', 'Scenario')]
+Q45IAMcompare.df=merge(Q45IAMcompare, SCENCOUNTQ45, by=c('Route', 'Question', 'Scenario'))
+Q45IAMcompare.dfmax=Q45IAMcompare.df[,max(count, na.rm=TRUE), by=c("Route")]
+setnames(Q45IAMcompare.dfmax, "V1", "max")
+Q45IAMcompare.dfmax2=merge(Q45IAMcompare.dfmax, Q45IAMcompare.df, by=c("Route"))
+Q45IAMcompare.df$Routecount <- paste(Q45IAMcompare.dfmax$Route, ' ','[',Q45IAMcompare.dfmax2$max,']',sep="") 
+
+Q45IAMcompare.df$value <- as.numeric(Q45IAMcompare.df$value)
+Q45IAMcompare.df$Routecount <- factor(Q45IAMcompare.df$Routecount, levels=c("IAMs [5]",    "Biomass [12]", "Nuclear [6]",  "PV [7]" ,      "Wind [7]",     "CCS [7]"     ))
+ 
+
+
+
+
+
+
+
+##############################################################################################################
+################################################### NEW NEW NEW ##############################################
+##############################################################################################################
+
+Q45IAMmodexp = Q45IAMcompare.df
+Q45IAMcompare.df$label <- paste(Q45IAMcompare.df$Route, Q45IAMcompare.df$Question)
+
+Q45IAMmodexp2iam=Q45IAMcompare.df[Route=="IAMs"]
+Q45IAMmodexp2iam$Category <- "IAMs"
+Q45IAMmodexp2own = Q45IAMcompare.df[label %in% c("Wind Wind" ,  "CCS Fossil+CCS" , "Nuclear Nuclear" , "PV PV",  "CCS Bioenergy+CCS", "PV CSP",  "Biomass Bioenergy"   )]
+Q45IAMmodexp2own$Category <- "Own"
+Q45IAMmodexp2other =Q45IAMcompare.df[!Route=="IAMs"]
+Q45IAMmodexp2other$Category <- "Other"
+
+Q45IAMmodexp2=rbind(Q45IAMmodexp2iam, Q45IAMmodexp2own, Q45IAMmodexp2other)
+Q45IAMmodexp2.avg = Q45IAMmodexp2[!value=="9", mean(value, na.rm=T), by=c("Scenario",  "Question", "Category")]
+
+Q45IAMmodexp2.avg=unique(Q45IAMmodexp2.avg)
+Q45IAMmodexp2.avg=spread(Q45IAMmodexp2.avg, Category, V1)
+setnames(Q45IAMmodexp2.avg, "IAMs", "IAMsAvg")
+setnames(Q45IAMmodexp2.avg, "Own", "OwnAvg")
+setnames(Q45IAMmodexp2.avg, "Other", "OtherAvg")
+
+
+
+Q45IAMmodexp2.avg=unique(Q45IAMmodexp2.avg)
+Q45IAMmodexp2ptl90 = Q45IAMmodexp2[!value=="9", quantile(value, 0.85, na.rm = TRUE),by=c("Scenario",  "Question", "Category")]
+Q45IAMmodexp2ptl90=spread(Q45IAMmodexp2ptl90, Category, V1)
+setnames(Q45IAMmodexp2ptl90, "IAMs", "IAMsMax")
+setnames(Q45IAMmodexp2ptl90, "Own", "OwnMax")
+setnames(Q45IAMmodexp2ptl90, "Other", "OtherMax")
+
+Q45IAMmodexp2ptl10= Q45IAMmodexp2[!value=="9", quantile(value, 0.15, na.rm = TRUE),by=c("Scenario",  "Question", "Category")]
+Q45IAMmodexp2ptl10=spread(Q45IAMmodexp2ptl10, Category, V1)
+setnames(Q45IAMmodexp2ptl10, "IAMs", "IAMsMin")
+setnames(Q45IAMmodexp2ptl10, "Own", "OwnMin")
+setnames(Q45IAMmodexp2ptl10, "Other", "OtherMin")
+
+
+Q45IAMmodexp2FULL=merge(Q45IAMmodexp2.avg,Q45IAMmodexp2ptl10, by=c("Scenario",  "Question"), allow.cartesian=TRUE)
+Q45IAMmodexp2FULL=merge(Q45IAMmodexp2FULL,Q45IAMmodexp2ptl90, by=c("Scenario",  "Question"), allow.cartesian=TRUE)
+
+### Count of experts
+SCENCOUNTQ45=data.table(INPUTnumericscen.Q45)
+SCENCOUNTQ45=SCENCOUNTQ45[,list(countall=length(V5)), by=c('Scenario', "Question")]
+SCENCOUNTQ45=INPUTnumericscen.Q45[,list(countspec=length(V5)), by=c('Scenario', "Question", "Route")]
+INPUTnumericscen.Q6sub=merge(INPUTnumericscen.Q6sub, SCENCOUNTQ6, by=c('Route', 'Question', 'Range', 'Scenario', 'Year'))
+INPUTnumericscen.Q6sub$Routecount  <- paste('n= ',INPUTnumericscen.Q6sub$count,sep="") 
+
+
+
+
+
+
+
+##### Plot
+Q45IAM4 = ggplot() +
+  geom_point(data=Q45IAMmodexp2FULL, aes(x=IAMsAvg, y=OtherAvg, colour=Question), size=3) + 
+  geom_errorbarh(data=Q45IAMmodexp2FULL,aes(x=IAMsAvg, y=OtherAvg, xmin=IAMsMin, xmax=IAMsMax, colour=Question), height=0.2, size=0.7)+
+  geom_errorbar(data=Q45IAMmodexp2FULL,aes(x=IAMsAvg, y=OtherAvg,  ymin=OtherMin, ymax=OtherMax, colour=Question), size=0.7) +
+  
+  scale_colour_manual(values=c("darkgrey", "blue","purple",  "darkgoldenrod1",  "darkgreen", "black","red3", "green"),
+                      breaks=c("Bioenergy", "Bioenergy+CCS","CSP", "Fossil", "Fossil+CCS", "Nuclear", "PV", "Wind")) +
+  geom_abline(intercept=0, slope=1) +
+  geom_abline(intercept=0.5, slope=1, linetype=3, alpha=0.5) +
+  geom_abline(intercept=-0.5, slope=1, linetype=3, alpha=0.5) +
+  geom_abline(intercept=0.75, slope=1, linetype=3, alpha=0.5) +
+  geom_abline(intercept=-0.75, slope=1, linetype=3, alpha=0.5) +
+  geom_abline(intercept=0.25, slope=1, linetype=3, alpha=0.5) +
+  geom_abline(intercept=-0.25, slope=1, linetype=3, alpha=0.5) +
+  facet_wrap(~Scenario, ncol=2) +
+  # annotate("rect", xmin=0, xmax=4.5, ymin=0, ymax=4.5, alpha=0.1, fill="green") + 
+  # annotate("rect", xmin=4.5, xmax=8, ymin=4.5, ymax=8, alpha=0.1, fill="red") + 
+  # annotate("rect", xmin=4.5, xmax=8, ymin=0, ymax=4.5, alpha=0.1, fill="lightblue4") + 
+  # annotate("rect", xmin=0, xmax=4.5, ymin=4.5, ymax=8, alpha=0.1, fill="grey") + 
+  annotate("text", x=8, y=1, angle=0, label="Higher ranking \n by experts", size=4, alpha=0.7, hjust=0, vjust=1) +
+  annotate("text", x=1, y=7.8, angle=0, label="Higher ranking \n by IAMs", size=4, alpha=0.7, hjust=1, vjust=0) +
+  #annotate("text", x=1, y=0.9, angle=0, label="Important", size=4, alpha=0.7, hjust=0) +
+  #annotate("text", x=5, y=8.2, angle=0, label="Less important", size=4, alpha=0.7, hjust=0) +
+  coord_cartesian(xlim=c(0.9,8), ylim=c(1,8)) +
+  geom_point(data=Q45IAMmodexp2FULL, aes(x=IAMsAvg, y=OtherAvg, colour=Question), size=3) + 
+  geom_errorbarh(data=Q45IAMmodexp2FULL,aes(x=IAMsAvg, y=OtherAvg, xmin=IAMsMin, xmax=IAMsMax, colour=Question), height=0.2)+
+  geom_errorbar(data=Q45IAMmodexp2FULL,aes(x=IAMsAvg, y=OtherAvg,  ymin=OtherMin, ymax=OtherMax, colour=Question)) +
+  theme_bw() +
+  theme(legend.text.align=0) +
+  ggtitle("Ranking of electricity supply technologies", subtitle="(Based on share in future electricity production in 2050)") +
+  labs(x="IAMs \n (1= Highest rank, 8 = Lowest rank)", y = "Expert\n (1= Highest rank, 8 = Lowest rank)") +
+  guides(colour=guide_legend("Technologies"))  +
+  theme(
+    axis.text.x = element_text(size=13, hjust=0.5),
+    axis.title.y = element_text(),
+    axis.text.y = element_text(size=13),
+    strip.text.x = element_text(size=12, face="bold"),
+    strip.text.y = element_text(size=12, face="bold"),
+    legend.text= element_text(size=12),
+    legend.title=element_text(size=12),
+    plot.title=element_text(hjust=0.5),
+    panel.border=element_rect(colour="black", size=1),
+    strip.background = element_rect(colour="white", fill="#FFFFFF"),
+    plot.subtitle=element_text(hjust=0.5),
+    title=element_text(size=14)) +
+  scale_y_reverse(lim=c(8,1), breaks=c(1:8)) +
+  scale_x_reverse(lim=c(8,1), breaks=c(1:8))
+
+
+print(Q45IAM4)
+
+ggsave(file="FINAL_PDF/GEC/Figure_1_ranking_all_experts.pdf", Q45IAM4,  width = 20, height =10, units = c("cm"), dpi = 300)
+png("FINAL_PDF/GEC/Figure_1_ranking_all_experts.png", width=700, height=350)
+print(Q45IAM4)
+dev.off()
+
+ggsave(file="../../../Proefschrift/CH4_Figure4-1_ranking_all_experts2.pdf", Q45IAM4,  width = 30, height =16, units = c("cm"), dpi = 300)

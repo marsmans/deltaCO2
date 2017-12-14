@@ -44,7 +44,7 @@ hoeveel0 <- function(data){
 data1.5.test <- subset(data1.5, select = -f.Ttarget)
 data2.test <- subset(data2, select = -f.Ttarget)
 data3.test <- subset(data3, select = -f.Ttarget)
-data4.test <- subset(data, select = -f.Ttarget)
+data4.test <- subset(data4, select = -f.Ttarget)
 
 # Deze is goed volgens mij!:
 data1.5.test <- melt(data1.5.test, id.vars = 'kosten.result', variable.name = 'parameter')
@@ -79,6 +79,7 @@ hcb = hcb + geom_histogram(bins = 50)
 hcb = hcb + facet_grid(. ~ Ttarget, labeller=labeller(parameter = plabels), scales="free", space="free")
 hcb = hcb + theme_bw()
 hcb = hcb + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])))
+hcb = hcb + ggtitle("Grijze wolk")
 hcb
 
 # 1.5+2+3+4

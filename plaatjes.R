@@ -28,12 +28,18 @@ source("TCRE+SSPnonCO2.R")
 #------------ grafieken ------------------
 
 # plaatje van TCRE en hoe de lijnen zijn gefit
-par(mfrow=c(1,1))
+par(mfrow=c(2,2))
 plot(cumuvstempLL,xlim=c(0,9), ylim=c(0,5))
 abline(fLL)
 points(cumuvstempUL,xlim=c(0,9))
 abline(fUL)
 abline(intercept, slope)
+
+
+
+
+
+
 
 # plaatje van costs en hoe de lijnen zijn gefit (lineaire geval)
 par(mfrow=c(1,1))
@@ -455,7 +461,7 @@ p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','sampletra
 p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "sampletrans01"="orange"))
-p = p + ggtitle("SRCC for costs, SSP-data")
+p = p + ggtitle("SRCC for costs, AR5-data")
 p
 # ggsave(paste("CC_GE_lin.png"),p)
 
