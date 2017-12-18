@@ -442,6 +442,7 @@ mc14 = mc14 + geom_jitter(alpha = 0.01)
 mc14 = mc14 + scale_color_gradientn(colours = rainbow(30))
 mc14 = mc14 + theme_bw()
 mc14 = mc14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Cost~index~(1.3~TtCO[2]==1))) #"Mitigation Costs (%GDP)") # 
+mc14 = mc14 + ggtitle("Mitgation Costs, 10-90% of SSP data, exp")
 mc14
 
 #UA
@@ -463,18 +464,40 @@ y_LL_roze <- 0.709
 y_UL_grijs <- 1.488
 y_LL_grijs <- 0.597
 
+#IPCC wolken
+# roze:
+rozeLL <- read.csv(file = "./../Databases/TCRE_pink_LL.txt", header = TRUE)
+rozeUL <- read.csv(file = "./../Databases/TCRE_pink_UL.txt", header = TRUE)
+
+# grijs:
+grijsLL <- read.csv(file = "./../Databases/TCRE_gray_LL.txt", header = TRUE)
+grijsUL <- read.csv(file = "./../Databases/TCRE_gray_UL.txt", header = TRUE)
+
+
+# schalen naar Tt
+rozeLL[1] <- rozeLL[1]/1000
+rozeUL[1] <- rozeUL[1]/1000
+grijsLL[1] <- grijsLL[1]/1000
+grijsUL[1] <- grijsUL[1]/1000
+
+# rechte lijn best fits
+rLL <- lm(data = rozeLL, temp ~ cumuCO2)
+rUL <- lm(data = rozeUL, temp ~ cumuCO2)
+gLL <- lm(data = grijsLL, temp ~ cumuCO2)
+gUL <- lm(data = grijsUL, temp ~ cumuCO2)
+
 #UA
 # plaatje van cumuCO2 vs Ttarget
 cb14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=Ttarget))
 cb14 = cb14 + geom_point(alpha = 0.05) # geom_jitter?
 cb14 = cb14 + scale_color_gradientn(colours = rainbow(30))
 cb14 = cb14 + theme_bw()
-#cb14 = cb14 + geom_abline(intercept = y_UL_roze, slope = coef(fUL)[2], color="pink")
-#cb14 = cb14 + geom_abline(intercept = y_LL_roze, slope = coef(fLL)[2], color="pink")
-cb14 = cb14 + geom_abline(intercept = y_UL_grijs, slope = coef(fUL)[2], color="gray")
-cb14 = cb14 + geom_abline(intercept = y_LL_grijs, slope = coef(fLL)[2], color="gray")
+cb14 = cb14 + geom_abline(intercept = y_UL_roze, slope = coef(rUL)[2], color="pink")
+cb14 = cb14 + geom_abline(intercept = y_LL_roze, slope = coef(rLL)[2], color="pink")
+cb14 = cb14 + geom_abline(intercept = y_UL_grijs, slope = coef(gUL)[2], color="gray")
+cb14 = cb14 + geom_abline(intercept = y_LL_grijs, slope = coef(gLL)[2], color="gray")
 cb14 = cb14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~relative~to~p.i.~( degree*C))) 
-cb14 = cb14 + coord_cartesian(ylim = c(0, 4))
-cb14 = cb14 + ggtitle("Modelresultaten + grijze IPCC wolk")
+cb14 = cb14 + coord_cartesian(xlim = c(0,9), ylim = c(0, 4))
+cb14 = cb14 + ggtitle("Modelresultaten + IPCC wolken")
 cb14
 

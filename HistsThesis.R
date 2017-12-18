@@ -79,7 +79,7 @@ hcb = hcb + geom_histogram(bins = 50)
 hcb = hcb + facet_grid(. ~ Ttarget, labeller=labeller(parameter = plabels), scales="free", space="free")
 hcb = hcb + theme_bw()
 hcb = hcb + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])))
-hcb = hcb + ggtitle("Grijze wolk")
+hcb = hcb + ggtitle("Histogrammen laatste versie model")
 hcb
 
 # 1.5+2+3+4

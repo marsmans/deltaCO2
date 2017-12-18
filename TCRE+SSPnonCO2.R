@@ -43,6 +43,8 @@ fUL <- lm(data = cumuvstempUL, temp ~ cumuCO2)
 intercept = (coef(fLL)[1] + coef(fUL)[1])/2
 slope = (coef(fLL)[2] + coef(fUL)[2])/2
 
+TCREmin <- coef(fLL)[2]
+TCREmax <- coef(fUL)[2]
 TCREmean <- slope
 
 # Als onzekerheidsrange [10%,90%] is
@@ -203,8 +205,11 @@ f.cumuvstemp.sample <- function(N, f.seed) {
   colnames(x) <- c("T2010", "TCRE", "TCRnonCO2")
   
   # transformeer random LHS naar LHS met goede parameters
-  T2010 <- qnorm(x[,1], mean=T2010mean, sd=T2010std)
-  TCRE <- qpert(x[,2], coef(fLL)[2], TCREmean, coef(fUL)[2], shape = 4)
+  #T2010 <- qnorm(x[,1], mean=T2010mean, sd=T2010std)
+  T2010 <- qpert(x[,1], 0.82, 0.895, 0.98, shape = 4)
+  #TCRE <- qpert(x[,2], coef(fLL)[2], TCREmean, coef(fUL)[2], shape = 4)
+  TCRE <- qpert(x[,2], TCREmin, TCREmin + (TCREmax-TCREmin)*(1-0.27), TCREmax, shape = 4)
+  #TCRE <- qpert(x[,2], TCREmin, (TCREmin + TCREmax)/2, TCREmax, shape = 4)
   nonCO2 <- qpert(x[,3], -1*afwijking_nonCO2 + TF2010, TF2010, afwijking_nonCO2 + TF2010, shape = 4) # gemiddelde niet rond 0 maar rond de 2010 waarde!
   
   

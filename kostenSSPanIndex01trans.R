@@ -230,13 +230,23 @@ colnames(ind.bakje6) <- c("deltaCO2", "Costs")
 #------------- Define bakjes ----------------
 
 # deltaCO2 waarde
-bakje1.deltaCO2 <- (min(ind.bakje1$deltaCO2) + max(ind.bakje1$deltaCO2))/2
-bakje2.deltaCO2 <- (min(ind.bakje2$deltaCO2) + max(ind.bakje2$deltaCO2))/2
-bakje3.deltaCO2 <- (min(ind.bakje3$deltaCO2) + max(ind.bakje3$deltaCO2))/2
-bakje4.deltaCO2 <- (min(ind.bakje4$deltaCO2) + max(ind.bakje4$deltaCO2))/2
-bakje5.deltaCO2 <- (min(ind.bakje5$deltaCO2) + max(ind.bakje5$deltaCO2))/2
-bakje6.deltaCO2 <- (min(ind.bakje6$deltaCO2) + max(ind.bakje6$deltaCO2))/2
-bakjeNoCostsSSP.deltaCO2 <- 6
+#bakje1.deltaCO2 <- (min(ind.bakje1$deltaCO2) + max(ind.bakje1$deltaCO2))/2
+#bakje2.deltaCO2 <- (min(ind.bakje2$deltaCO2) + max(ind.bakje2$deltaCO2))/2
+#bakje3.deltaCO2 <- (min(ind.bakje3$deltaCO2) + max(ind.bakje3$deltaCO2))/2
+#bakje4.deltaCO2 <- (min(ind.bakje4$deltaCO2) + max(ind.bakje4$deltaCO2))/2
+#bakje5.deltaCO2 <- (min(ind.bakje5$deltaCO2) + max(ind.bakje5$deltaCO2))/2
+#bakje6.deltaCO2 <- (min(ind.bakje6$deltaCO2) + max(ind.bakje6$deltaCO2))/2
+#bakjeNoCostsSSP.deltaCO2 <- 6
+
+# gebruik mean ipv middle:
+# deltaCO2 waarde
+bakje1.deltaCO2 <- median(ind.bakje1$deltaCO2)
+bakje2.deltaCO2 <- median(ind.bakje2$deltaCO2)
+bakje3.deltaCO2 <- median(ind.bakje3$deltaCO2)
+bakje4.deltaCO2 <- median(ind.bakje4$deltaCO2)
+bakje5.deltaCO2 <- median(ind.bakje5$deltaCO2)
+bakje6.deltaCO2 <- median(ind.bakje6$deltaCO2)
+bakjeNoCostsSSP.deltaCO2 <- 5
 
 # median costs
 bakje1.median <- median(ind.bakje1$Costs, na.rm = T)
@@ -248,32 +258,54 @@ bakje6.median <- median(ind.bakje6$Costs, na.rm = T)
 bakjeNoCostsSSP.median <- 0
 
 # minimum- en maximumwaarde van bakjes
-bakje1.min <- min(ind.bakje1$Costs, na.rm = T)
-bakje1.max <- 14.56416286 #max(ind.bakje1$Costs, na.rm = T)
+#bakje1.min <- min(ind.bakje1$Costs, na.rm = T)
+#bakje1.max <- 14.56416286 #max(ind.bakje1$Costs, na.rm = T)
 
-bakje2.min <- min(ind.bakje2$Costs, na.rm = T)
-bakje2.max <- max(ind.bakje2$Costs, na.rm = T)
+#bakje2.min <- min(ind.bakje2$Costs, na.rm = T)
+#bakje2.max <- max(ind.bakje2$Costs, na.rm = T)
 
-bakje3.min <- 0.072391631 #min(ind.bakje3$Costs, na.rm = T)
-bakje3.max <- 4.290558506 #max(ind.bakje3$Costs, na.rm = T)
+#bakje3.min <- 0.072391631 #min(ind.bakje3$Costs, na.rm = T)
+#bakje3.max <- 4.290558506 #max(ind.bakje3$Costs, na.rm = T)
 
-bakje4.min <- min(ind.bakje4$Costs, na.rm = T)
-bakje4.max <- 3.173387129 #max(ind.bakje4$Costs, na.rm = T)
+#bakje4.min <- min(ind.bakje4$Costs, na.rm = T)
+#bakje4.max <- 3.173387129 #max(ind.bakje4$Costs, na.rm = T)
 
-bakje5.min <- 0.0112516 #min(ind.bakje5$Costs, na.rm = T)
-bakje5.max <- max(ind.bakje5$Costs, na.rm = T)
+#bakje5.min <- 0.0112516 #min(ind.bakje5$Costs, na.rm = T)
+#bakje5.max <- max(ind.bakje5$Costs, na.rm = T)
 
-bakje6.min <- min(ind.bakje6$Costs, na.rm = T)
-bakje6.max <- max(ind.bakje6$Costs, na.rm = T)
+#bakje6.min <- min(ind.bakje6$Costs, na.rm = T)
+#bakje6.max <- max(ind.bakje6$Costs, na.rm = T)
+
+#bakjeNoCostsSSP.min <- 0
+#bakjeNoCostsSSP.max <- 0
+
+
+#gebruik 10-90% waarde:
+bakje1.min <- quantile(ind.bakje1$Costs, 0.1, na.rm = T)
+bakje1.max <- 5.174643076 #quantile(ind.bakje1$Costs, 0.9, na.rm = T)
+
+bakje2.min <- quantile(ind.bakje2$Costs, 0.1, na.rm = T)
+bakje2.max <- quantile(ind.bakje2$Costs, 0.9, na.rm = T)
+
+bakje3.min <- 0.149500753 #quantile(ind.bakje3$Costs, 0.1, na.rm = T)
+bakje3.max <- 1.865747666 #quantile(ind.bakje3$Costs, 0.9, na.rm = T)
+
+bakje4.min <- quantile(ind.bakje4$Costs, 0.1, na.rm = T)
+bakje4.max <- quantile(ind.bakje4$Costs, 0.9, na.rm = T)
+
+bakje5.min <- quantile(ind.bakje5$Costs, 0.1, na.rm = T)
+bakje5.max <- quantile(ind.bakje5$Costs, 0.9, na.rm = T)
+
+bakje6.min <- quantile(ind.bakje6$Costs, 0.1, na.rm = T)
+bakje6.max <- quantile(ind.bakje6$Costs, 0.9, na.rm = T)
 
 bakjeNoCostsSSP.min <- 0
 bakjeNoCostsSSP.max <- 0
 
-
 #------------ Maak sample [0.1] ------------------
 
 sampletrans01 <- rpert(N, min = 0, mode = 1/3, max = 1)
-
+#sampletrans01 <- rpert(N, min = 0, mode = 1/5, max = 1)
 
 #------------ 'Reken' kosten uit ----------------
 
@@ -321,6 +353,8 @@ costs.oneRun <- function(deltaCO2, trans01) {
     kosten.min <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje6.min, bakjeNoCostsSSP.min)
     kosten.max <- punt_rechteLijn(deltaCO2, bakje6.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje6.max, bakjeNoCostsSSP.max)
     
+    return((kosten.max-kosten.min)*trans01 + kosten.min)
+    
     # zit het hoger dan bakjeNoCostsSSP  
   } else  if (deltaCO2 >= bakjeNoCostsSSP.deltaCO2) {
     return(0) #return("hoger dan bakje NoCostsSSP")
@@ -329,7 +363,12 @@ costs.oneRun <- function(deltaCO2, trans01) {
   grootte <- kosten.max - kosten.min
   kosten <- (kosten.max-kosten.min)*trans01 + kosten.min
   
-  return(kosten)
+  exp.kosten.min <- 2.1434*exp(-1.378*deltaCO2)
+  exp.kosten.max <- 9.1525*exp(-0.823*deltaCO2)
+    
+  exp.kosten <- (exp.kosten.max - exp.kosten.min)*trans01 + exp.kosten.min
+  
+  return(exp.kosten)
 }
 
 
