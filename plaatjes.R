@@ -467,6 +467,8 @@ q
 
 source("kostenbakjesAR5tran01toCosts.R")
 source("kostenSSPanIndex01trans.R")
+source("kostenSSPanIndex01trans5bakjes.R")
+
 
 # krijgt een CC matrix
 s.seed <- 21
@@ -482,7 +484,7 @@ p = ggplot(CC[variable %in% c('T2010','TCRE','nonCO2','cumuCO2result','sampletra
 p = p + geom_bar(aes(x=Ttarget,y=value,fill=variable),stat="identity",position="dodge") #position="dodge"
 p = p + theme_bw()# + theme(axis.text.x=element_text(size=12))
 p = p + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "sampletrans01"="orange"))
-p = p + ggtitle("SRCC, AR5-data")
+p = p + ggtitle("SRCC, SSP-data")
 p
 # ggsave(paste("CC_GE_lin.png"),p)
 

@@ -243,7 +243,7 @@ bakje3.deltaCO2 <- median(ind.bakje3$deltaCO2)
 bakje4.deltaCO2 <- median(ind.bakje4$deltaCO2)
 bakje5.deltaCO2 <- median(ind.bakje5$deltaCO2)
 bakje6.deltaCO2 <- median(ind.bakje6$deltaCO2)
-bakjeNoCostsSSP.deltaCO2 <- 5
+bakjeNoCostsSSP.deltaCO2 <- 7
 
 # median costs
 bakje1.median <- median(ind.bakje1$Costs, na.rm = T)
@@ -344,7 +344,7 @@ costs.oneRun <- function(deltaCO2, trans01) {
     kosten.min <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje5.min, bakjeNoCostsSSP.min)
     kosten.max <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje5.max, bakjeNoCostsSSP.max)
     
-    return((kosten.max-kosten.min)*trans01 + kosten.min)
+    #return((kosten.max-kosten.min)*trans01 + kosten.min)
     
     # zit het hoger dan bakjeNoCostsSSP  
   } else  if (deltaCO2 >= bakjeNoCostsSSP.deltaCO2) {
@@ -361,8 +361,8 @@ costs.oneRun <- function(deltaCO2, trans01) {
   
   exp.kosten <- (exp.kosten.max - exp.kosten.min)*trans01 + exp.kosten.min
   
-  return(kosten)
-  #return(exp.kosten) 
+  #return(kosten)
+  return(exp.kosten) 
 }
 
 
