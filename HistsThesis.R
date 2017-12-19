@@ -1,5 +1,6 @@
 source("kostenbakjesAR5tran01toCosts.R")
 source("kostenSSPanIndex01trans.R")
+source("kostenSSPanIndex01trans5bakjes.R")
 
 f.dataframekosten <- function(N,Ttarget,f.seed) {
   cumuvstemp.sample <- f.cumuvstemp.sample(N,f.seed)
