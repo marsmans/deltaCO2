@@ -108,6 +108,7 @@ kostenSSP.ind.gather <- gather(kostenSSP.indexed, variable, value)
 kostenSSP.ind.gather$cumuCO2 <- kostenSSP.indexed$Cum.CO2
 kostenSSP.ind.gather <- data.table(kostenSSP.ind.gather)
 
+
 s <- ggplot(kostenSSP.ind.gather[variable %in% c('Cost.Estimate..ktrillion.','MAC.Costs..ktrillion.','Consumption.Loss..ktrillion.')])
 s = s + geom_point(aes(x=cumuCO2,y=value),stat="identity")
 s = s + theme_bw()
@@ -129,7 +130,7 @@ s
 # 10-90 PERCETIEL WAARDEN
 s <- ggplot(kostenSSP.ind.gather[variable %in% c('Cost.Estimate..ktrillion.','MAC.Costs..ktrillion.','Consumption.Loss..ktrillion.')])
 s = s + geom_point(aes(x=cumuCO2,y=value),stat="identity")
-s = s + theme_bw()
+s = s + theme_bw() + theme(axis.text.x=element_text(size=13))
 #s = s + scale_color_manual(values=c("Cost.Estimate..ktrillion."="blue","MAC.Costs..ktrillion."="green", "Consumption.Loss..ktrillion."="red"),
 #s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
 #                           labels=c("Carbon price total costs","Area under MAC curve","Consumption loss"))
@@ -138,9 +139,9 @@ s = s + theme(legend.justification=c(0.9,0.65), legend.position=c(0.9,0.65),
               legend.text = element_text(size = 12))
 s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Cost~index~(1.3~TtCO[2]==1)))
 s = s + coord_cartesian(xlim = c(0,5)) #, ylim = c(0,10))
-s = s + stat_function(fun=function(x)2.1434*exp(-1.378*x), geom="line", aes(colour="minimum"))
-s = s + stat_function(fun=function(x)3.6792*exp(-0.968*x), geom="line", aes(colour="median"))
-s = s + stat_function(fun=function(x)9.1525*exp(-0.823*x), geom="line", aes(colour="maximum"))
+s = s + stat_function(fun=function(x)1.4577*exp(-1.32*x), geom="line", aes(colour="f10"))
+#s = s + stat_function(fun=function(x)3.6792*exp(-0.968*x), geom="line", aes(colour="median"))
+s = s + stat_function(fun=function(x)(9.8357*exp(-0.851*x)-0.1), geom="line", aes(colour="f90"))
 #s = s + scale_colour_manual("Function", value=c("blue","red"), breaks=c("min","med"))
 s
 
@@ -499,8 +500,8 @@ q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
 q = q + scale_fill_manual(values=c("cumuCO2result"="dark blue","cs"="dark red","T2010"="black","TCRE"="green", "nonCO2"="blue", "sampletrans01"="orange"),
                           name="Parameter",
                           labels=c("TFnonCO2", "t","T2010","TCRE"))
-q = q + ggtitle("SRCC^2, SSP-data")
-q = q + labs(x = "T2100", y = expression(r[S]^{2}))
+q = q + ggtitle(expression(SRCC^{2},~SSP-data))
+q = q + labs(x = expression(T[2100]), y = expression(r[S]^{2}))
 q
 
 # ggsave(paste("CC.costs_T2010_TCRE_nonCO2_deltaCO2.png"),q)

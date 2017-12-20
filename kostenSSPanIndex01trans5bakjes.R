@@ -243,7 +243,7 @@ bakje3.deltaCO2 <- median(ind.bakje3$deltaCO2)
 bakje4.deltaCO2 <- median(ind.bakje4$deltaCO2)
 bakje5.deltaCO2 <- median(ind.bakje5$deltaCO2)
 bakje6.deltaCO2 <- median(ind.bakje6$deltaCO2)
-bakjeNoCostsSSP.deltaCO2 <- 7
+bakjeNoCostsSSP.deltaCO2 <- 5
 
 # median costs
 bakje1.median <- median(ind.bakje1$Costs, na.rm = T)
@@ -340,11 +340,14 @@ costs.oneRun <- function(deltaCO2, trans01) {
     
     # zit het tussen bakje 5 en NoCost?
   } else if (deltaCO2 >= bakje5.deltaCO2 & deltaCO2 < bakjeNoCostsSSP.deltaCO2) {
-    kosten.median <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje5.median, bakjeNoCostsSSP.median)
-    kosten.min <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje5.min, bakjeNoCostsSSP.min)
-    kosten.max <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje5.max, bakjeNoCostsSSP.max)
+    b5.exp.kosten.min <- 1.4577*exp(-1.32*bakje5.deltaCO2)
+    b5.exp.kosten.max <- (9.8357*exp(-0.851*bakje5.deltaCO2) - 0.1)
     
-    #return((kosten.max-kosten.min)*trans01 + kosten.min)
+    kosten.median <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakjeNoCostsSSP.deltaCO2, bakje5.median, bakjeNoCostsSSP.median)
+    kosten.min <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakjeNoCostsSSP.deltaCO2, b5.exp.kosten.min, bakjeNoCostsSSP.min)
+    kosten.max <- punt_rechteLijn(deltaCO2, bakje5.deltaCO2, bakjeNoCostsSSP.deltaCO2, b5.exp.kosten.max, bakjeNoCostsSSP.max)
+    
+    return((kosten.max-kosten.min)*trans01 + kosten.min)
     
     # zit het hoger dan bakjeNoCostsSSP  
   } else  if (deltaCO2 >= bakjeNoCostsSSP.deltaCO2) {

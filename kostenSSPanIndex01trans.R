@@ -246,7 +246,7 @@ bakje3.deltaCO2 <- median(ind.bakje3$deltaCO2)
 bakje4.deltaCO2 <- median(ind.bakje4$deltaCO2)
 bakje5.deltaCO2 <- median(ind.bakje5$deltaCO2)
 bakje6.deltaCO2 <- median(ind.bakje6$deltaCO2)
-bakjeNoCostsSSP.deltaCO2 <- 6
+bakjeNoCostsSSP.deltaCO2 <- 5
 
 # median costs
 bakje1.median <- median(ind.bakje1$Costs, na.rm = T)
@@ -368,8 +368,8 @@ costs.oneRun <- function(deltaCO2, trans01) {
     
   exp.kosten <- (exp.kosten.max - exp.kosten.min)*trans01 + exp.kosten.min
   
-  #return(exp.kosten)
-  return(kosten)
+  return(exp.kosten)
+  #return(kosten)
 }
 
 

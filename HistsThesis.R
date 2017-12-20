@@ -78,9 +78,9 @@ plabels <- c(T2010 = "T2010", TCRE = "TCRE", nonCO2 = "TFnonCO2,2010", cumuCO2re
 hcb <- ggplot(data1.523.test[parameter %in% c('cumuCO2result')], aes(value))
 hcb = hcb + geom_histogram(bins = 50)
 hcb = hcb + facet_grid(. ~ Ttarget, labeller=labeller(parameter = plabels), scales="free", space="free")
-hcb = hcb + theme_bw()
+hcb = hcb + theme_bw() + theme(axis.text.x=element_text(size=13))
 hcb = hcb + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])))
-hcb = hcb + ggtitle("Histogrammen laatste versie model")
+#hcb = hcb + ggtitle("Histogrammen laatste versie model")
 hcb
 
 # 1.5+2+3+4
@@ -110,6 +110,8 @@ costsAR5 <- rbind(costs1.5, costs2, costs3)#, costs4)
 costsAR5$database <- "AR5"
 
 source("kostenSSPanIndex01trans.R")
+source("kostenSSPanIndex01trans5bakjes.R")
+
 costs1.5 <- data.frame(costs = data1.5$kosten.result)
 costs1.5$Ttarget <- 1.5
 
@@ -122,7 +124,7 @@ costs3$Ttarget <- 3
 costs4 <- data.frame(costs = data4$kosten.result)
 costs4$Ttarget <- 4
 
-costsSSP <- rbind(costs1.5, costs2, costs3, costs4)
+costsSSP <- rbind(costs1.5, costs2, costs3)#, costs4)
 costsSSP$database <- "SSP"
 
 costsAR5SSP <- rbind(costsAR5,costsSSP)
@@ -130,8 +132,8 @@ costsAR5SSP <- rbind(costsAR5,costsSSP)
 
 hcb <- ggplot(costsAR5SSP, aes(costs))
 hcb = hcb + geom_histogram(bins = 50)
-hcb = hcb + facet_grid(database ~ Ttarget, scales = "free") #labeller=labeller(parameter = plabels) , scales="free", space="free"
-hcb = hcb + theme_bw()
+hcb = hcb + facet_grid(database ~ Ttarget, scales= "free") #labeller=labeller(parameter = plabels) , scales="free", space="free"
+hcb = hcb + theme_bw() + theme(axis.text.x=element_text(size=13))
 hcb = hcb + labs(x = "Mitigation Costs")
 hcb
 
