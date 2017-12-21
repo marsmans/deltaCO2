@@ -34,6 +34,18 @@ data2 <- f.dataframekosten(N,2,s.seed)
 data3 <- f.dataframekosten(N,3,s.seed)
 data <- f.dataframekosten(N,4,s.seed)
 
+data2.9 <- f.dataframekosten(N,2.9,s.seed)
+data3.1 <- f.dataframekosten(N,3.1,s.seed)
+data3.2 <- f.dataframekosten(N,3.2,s.seed)
+data3.3 <- f.dataframekosten(N,3.3,s.seed)
+data3.4 <- f.dataframekosten(N,3.4,s.seed)
+data3.5 <- f.dataframekosten(N,3.5,s.seed)
+data3.6 <- f.dataframekosten(N,3.6,s.seed)
+data3.7 <- f.dataframekosten(N,3.7,s.seed)
+data3.8 <- f.dataframekosten(N,3.8,s.seed)
+data3.9 <- f.dataframekosten(N,3.9,s.seed)
+data4 <- f.dataframekosten(N,4,s.seed)
+
 
 # bij hoeveel zijn de kosten 0?
 hoeveel0 <- function(data){
@@ -90,26 +102,26 @@ ps
 
 # scatterplots one Ttarget
 sp1.5 <- ggplot(data1.5.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
-sp1.5 = sp1.5 + geom_jitter(alpha = 0.01)
+sp1.5 = sp1.5 + geom_point(alpha = 0.01)
 sp1.5 = sp1.5 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
-sp1.5 = sp1.5 + theme_bw()
+sp1.5 = sp1.5 + theme_bw() + theme(axis.text.x=element_text(size=12))
 sp1.5 = sp1.5 + labs(y = "Mitigation costs (%GDP)") #expression(Cost~index~(1.3~TtCO[2]==1))) #)
 sp1.5
 
 sp2 <- ggplot(data2.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
-sp2 = sp2 + geom_jitter(alpha = 0.01)
+sp2 = sp2 + geom_point(alpha = 0.01)
 sp2 = sp2 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
-sp2 = sp2 + theme_bw()
+sp2 = sp2 + theme_bw() + theme(axis.text.x=element_text(size=12))
 sp2 = sp2 + labs(y = NULL)
 sp2
 
 sp3 <- ggplot(data3.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01')], aes(x=value, y=kosten.result))
-sp3 = sp3 + geom_jitter(alpha = 0.01)
+sp3 = sp3 + geom_point(alpha = 0.01)
 sp3 = sp3 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
-sp3 = sp3 + theme_bw()
+sp3 = sp3 + theme_bw() + theme(axis.text.x=element_text(size=12))
 sp3 = sp3 + labs(y = NULL)
 sp3
 
@@ -118,7 +130,7 @@ spd <- ggplot(data.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01'
 spd = spd + geom_jitter(alpha = 0.01)
 spd = spd + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
-spd = spd + theme_bw()
+spd = spd + theme_bw() + theme(axis.text.x=element_text(size=12))
 spd = spd + labs(x = NULL, y = NULL)
 spd
 
@@ -127,7 +139,7 @@ sp1.5 <- ggplot(data1.5.test[parameter %in% c('T2010','TCRE','nonCO2','sampletra
 sp1.5 = sp1.5 + geom_jitter(alpha = 0.01)
 sp1.5 = sp1.5 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
-sp1.5 = sp1.5 + theme_bw()
+sp1.5 = sp1.5 + theme_bw() + theme(axis.text.x=element_text(size=12))
 sp1.5 = sp1.5 + labs(x = NULL, y = expression(Cost~index~(1.3~TtCO[2]==1))) #"Mitigation costs (%GDP)")
 sp1.5
 
