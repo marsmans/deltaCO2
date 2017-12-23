@@ -82,20 +82,22 @@ nonCO2ssp <- read.csv(file = "./../Databases/ssp_data_update_naar_R.csv", header
 nonCO2ssp$CumCO2..GtCO2. <- nonCO2ssp$CumCO2..GtCO2./1000
 
 # nonCO2 forcing vs deltaCO2
-#s = ggplot(nonCO2ssp,aes(x=CumCO2..GtCO2.,y=F_nonCO2))
-#s = s + geom_point()
-#s = s + theme_bw()
-#s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(non-CO[2]~forcing~(W/m^2)))
-#s = s + coord_cartesian(xlim = c(0,8.5), ylim = c(0,1.8))
-#s
+# gebruikt
+s = ggplot(nonCO2ssp,aes(x=CumCO2..GtCO2.,y=F_nonCO2))
+s = s + geom_point()
+s = s + theme_bw() + theme(text = element_text(size = 13), axis.text.x=element_text(size=12), axis.text.y=element_text(size=12))
+s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(non-CO[2]~forcing~(W/m^2)))
+s = s + coord_cartesian(xlim = c(0,8.5), ylim = c(0,1.8))
+s
 
-#Ftot vs temp
-#s = ggplot(nonCO2ssp,aes(x=F_tot,y=Temp...C.))
-#s = s + geom_point()
-#s = s + theme_bw()
-#s = s + labs(x = expression(Total~forcing~(W/m^2)), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
-#s = s + coord_cartesian(xlim = c(0,9), ylim = c(0,5.5))
-#s
+# Ftot vs temp
+# gebruikt
+s = ggplot(nonCO2ssp,aes(x=F_tot,y=Temp...C.))
+s = s + geom_point()
+s = s + theme_bw() + theme(text = element_text(size = 13), axis.text.x=element_text(size=12), axis.text.y=element_text(size=12))
+s = s + labs(x = expression(Total~forcing~(W/m^2)), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
+s = s + coord_cartesian(xlim = c(0,9), ylim = c(0,5.5))
+s
 
 #alleen1.5$CumCO2..GtCO2. <- alleen1.5$CumCO2..GtCO2./1000
 
@@ -131,12 +133,12 @@ nonCO2ssp.gather$deltaCO2 <- nonCO2ssp$CumCO2..GtCO2.
 nonCO2ssp.gather <- data.table(nonCO2ssp.gather)
 
 s <- ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2','tempStijging_door_F_nonCO2.met.avg')])
-s = s + geom_point(aes(x=deltaCO2,y=value, shape=variable),stat="identity")
-s = s + theme_bw()
-#s = s + scale_color_manual(values=c("tempStijging_door_F_nonCO2"="blue","tempStijging_door_F_nonCO2.met.avg"="dark green"),
-s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
+s = s + geom_point(aes(x=deltaCO2,y=value, col=variable),stat="identity")
+s = s + theme_bw() + theme(text = element_text(size = 13), axis.text.x=element_text(size=12), axis.text.y=element_text(size=12))
+s = s + scale_color_manual(values=c("tempStijging_door_F_nonCO2"="blue","tempStijging_door_F_nonCO2.met.avg"="orange"),
+#s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
                            labels=c("Method 1","Method 2"))
-s = s + guides(shape=guide_legend(title=NULL))
+s = s + guides(col=guide_legend(title=NULL))
 s = s + theme(legend.justification=c(0.9,0.1), legend.position=c(0.9,0.1), 
               legend.text = element_text(size = 14))
 s = s + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
@@ -175,10 +177,10 @@ abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + afwijking_nonCO2, col = "red
 t <- ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2.met.avg')])
 t = t + geom_point(aes(x=deltaCO2,y=value),stat="identity")
 t = t + geom_smooth(aes(x=deltaCO2,y=value),method = 'lm',formula = y~x, se=F)
-t = t + geom_abline(intercept = coef(fitlijn)[1], slope = coef(fitlijn)[2], color="blue")
+t = t + geom_abline(intercept = coef(fitlijn)[1], slope = coef(fitlijn)[2], color="blue", size=1)
 t = t + geom_abline(intercept = coef(fitlijn)[1] - afwijking_nonCO2, slope = coef(fitlijn)[2], color="red")
 t = t + geom_abline(intercept = coef(fitlijn)[1] + afwijking_nonCO2, slope = coef(fitlijn)[2], color="red")
-t = t + theme_bw()
+t = t + theme_bw() + theme(text = element_text(size = 13), axis.text.x=element_text(size=12), axis.text.y=element_text(size=12))
 t = t + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
 t
 

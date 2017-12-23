@@ -105,7 +105,7 @@ sp1.5 <- ggplot(data1.5.test[parameter %in% c('T2010','TCRE','nonCO2','sampletra
 sp1.5 = sp1.5 + geom_point(alpha = 0.01)
 sp1.5 = sp1.5 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
-sp1.5 = sp1.5 + theme_bw() + theme(axis.text.x=element_text(size=12))
+sp1.5 = sp1.5 + theme_bw() + theme(text = element_text(size = 12), axis.text.x=element_text(size=11), axis.text.y=element_text(size=11))
 sp1.5 = sp1.5 + labs(y = "Mitigation costs (%GDP)") #expression(Cost~index~(1.3~TtCO[2]==1))) #)
 sp1.5
 
@@ -113,7 +113,7 @@ sp2 <- ggplot(data2.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01
 sp2 = sp2 + geom_point(alpha = 0.01)
 sp2 = sp2 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
-sp2 = sp2 + theme_bw() + theme(axis.text.x=element_text(size=12))
+sp2 = sp2 + theme_bw() + theme(text = element_text(size = 12), axis.text.x=element_text(size=11), axis.text.y=element_text(size=11))
 sp2 = sp2 + labs(y = NULL)
 sp2
 
@@ -121,7 +121,7 @@ sp3 <- ggplot(data3.test[parameter %in% c('T2010','TCRE','nonCO2','sampletrans01
 sp3 = sp3 + geom_point(alpha = 0.01)
 sp3 = sp3 + facet_grid(parameter ~ Ttarget, scales="free", space="free", labeller=labeller(parameter = plabels)) #, scales="free", space="free"
 #sp = sp + facet_wrap(Ttarget ~ parameter, labeller=labeller(parameter = plabels)) #, scales="free", space="free"
-sp3 = sp3 + theme_bw() + theme(axis.text.x=element_text(size=12))
+sp3 = sp3 + theme_bw() + theme(text = element_text(size = 12), axis.text.x=element_text(size=11), axis.text.y=element_text(size=11))
 sp3 = sp3 + labs(y = NULL)
 sp3
 
@@ -455,7 +455,7 @@ data.bundel <- data.table(data.bundel)
 mc14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=kosten.result, colour=Ttarget))
 mc14 = mc14 + geom_jitter(alpha = 0.01)
 mc14 = mc14 + scale_color_gradientn(colours = rainbow(30))
-mc14 = mc14 + theme_bw() + theme(axis.text.x=element_text(size=13))
+mc14 = mc14 + theme_bw() + theme(text = element_text(size = 12), axis.text.x=element_text(size=11), axis.text.y=element_text(size=11))
 mc14 = mc14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Cost~index~(1.3~TtCO[2]==1))) #"Mitigation Costs (%GDP)") # 
 #mc14 = mc14 + ggtitle("Mitgation Costs, 10-90% of SSP data, exp!, noMC5, 5bakjes")
 mc14
@@ -465,7 +465,7 @@ mc14
 cb14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=Ttarget))
 cb14 = cb14 + geom_point(alpha = 0.05) # geom_jitter?
 cb14 = cb14 + scale_color_gradientn(colours = rainbow(30))
-cb14 = cb14 + theme_bw() + theme(axis.text.x=element_text(size=13))
+cb14 = cb14 + theme_bw() + theme(text = element_text(size = 12), axis.text.x=element_text(size=11), axis.text.y=element_text(size=11))
 cb14 = cb14 + labs(x = expression(Cumulative~CO[2]~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~relative~to~p.i.~( degree*C))) 
 cb14 = cb14 + coord_cartesian(ylim = c(1, 4))
 cb14
@@ -506,7 +506,7 @@ gUL <- lm(data = grijsUL, temp ~ cumuCO2)
 cb14 <- ggplot(data.bundel[parameter %in%  c('cumuCO2result')], aes(x=value, y=Ttarget))
 cb14 = cb14 + geom_point(alpha = 0.05) # geom_jitter?
 cb14 = cb14 + scale_color_gradientn(colours = rainbow(30))
-cb14 = cb14 + theme_bw() + theme(axis.text.x=element_text(size=13))
+cb14 = cb14 + theme_bw() + theme(text = element_text(size = 12), axis.text.x=element_text(size=11), axis.text.y=element_text(size=11))
 cb14 = cb14 + geom_abline(intercept = y_UL_roze, slope = coef(rUL)[2], color="pink",size=1.5)
 cb14 = cb14 + geom_abline(intercept = y_LL_roze, slope = coef(rLL)[2], color="pink",size=1.5)
 cb14 = cb14 + geom_abline(intercept = y_UL_grijs, slope = coef(gUL)[2], color="gray",size=1.5)

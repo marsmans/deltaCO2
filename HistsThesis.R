@@ -145,7 +145,7 @@ hcb
 hcb <- ggplot()
 hcb = hcb + geom_histogram(aes(sampletrans01),bins = 30)
 #hcb = hcb + facet_grid(. ~ Ttarget, labeller=labeller(parameter = plabels), scales="free", space="free")
-hcb = hcb + theme_bw()
+hcb = hcb + theme_bw() + theme(text = element_text(size = 20), axis.text.x=element_text(size=18), axis.text.y=element_text(size=18))
 hcb = hcb + labs(x = "t")
 hcb
 

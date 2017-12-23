@@ -130,7 +130,7 @@ s
 # 10-90 PERCETIEL WAARDEN
 s <- ggplot(kostenSSP.ind.gather[variable %in% c('Cost.Estimate..ktrillion.','MAC.Costs..ktrillion.','Consumption.Loss..ktrillion.')])
 s = s + geom_point(aes(x=cumuCO2,y=value),stat="identity")
-s = s + theme_bw() + theme(axis.text.x=element_text(size=13))
+s = s + theme_bw() + theme(text = element_text(size = 12), axis.text.x=element_text(size=11), axis.text.y=element_text(size=11))
 #s = s + scale_color_manual(values=c("Cost.Estimate..ktrillion."="blue","MAC.Costs..ktrillion."="green", "Consumption.Loss..ktrillion."="red"),
 #s = s + scale_shape_manual(values=c("tempStijging_door_F_nonCO2"=1,"tempStijging_door_F_nonCO2.met.avg"=4), #if you want shapes
 #                           labels=c("Carbon price total costs","Area under MAC curve","Consumption loss"))
