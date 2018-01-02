@@ -167,29 +167,41 @@ fitlijn <- lm(data = nonCO2ssp, tempStijging_door_F_nonCO2.met.avg ~ CumCO2..GtC
 abline(fitlijn)
 
 
+# we willen graag op de roze wolk uitkomen
+# daarvoor moet slope (TCRnonCO2) 0.190 zijn
+TCRnonCO2NaarRoze <- 0.190
 
-# hij ligt steeds maximaal ongeveer 0.2 onder of bover de best-fit-lijn, dus
-afwijking_nonCO2 <- 0.23
+fitlijnNaarRoze <- lm(data = nonCO2ssp, I(tempStijging_door_F_nonCO2.met.avg - TCRnonCO2NaarRoze*CumCO2..GtCO2.)~1)
 
-abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] - afwijking_nonCO2, col = "red")
-abline(b = coef(fitlijn)[2], a = coef(fitlijn)[1] + afwijking_nonCO2, col = "red")
+plot(tempStijging_door_F_nonCO2.met.avg~nonCO2ssp$CumCO2..GtCO2., main = "Temperatuurstijging door F_nonCO2 (gem. verh.)", xlab = "deltaCO2 (TtCO2)", ylab = "T (*C)")
+abline(coef(fitlijnNaarRoze)[1],TCRnonCO2NaarRoze)
 
-t <- ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2.met.avg')])
-t = t + geom_point(aes(x=deltaCO2,y=value),stat="identity")
-t = t + geom_smooth(aes(x=deltaCO2,y=value),method = 'lm',formula = y~x, se=F)
-t = t + geom_abline(intercept = coef(fitlijn)[1], slope = coef(fitlijn)[2], color="blue", size=1)
-t = t + geom_abline(intercept = coef(fitlijn)[1] - afwijking_nonCO2, slope = coef(fitlijn)[2], color="red")
-t = t + geom_abline(intercept = coef(fitlijn)[1] + afwijking_nonCO2, slope = coef(fitlijn)[2], color="red")
-t = t + theme_bw() + theme(text = element_text(size = 13), axis.text.x=element_text(size=12), axis.text.y=element_text(size=12))
-t = t + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
-t
 
 
 # hellingshoek best-fit-lijn
 TCRnonCO2 <- coef(fitlijn)[2]
+TCRnonCO2 <- TCRnonCO2NaarRoze
 
 # intercept best-fit-lijn
 TF2010 <- coef(fitlijn)[1]
+TF2010 <- coef(fitlijnNaarRoze[1])
+
+
+# hij ligt steeds maximaal ongeveer 0.2 onder of bover de best-fit-lijn, dus
+afwijking_nonCO2 <- 0.23
+
+abline(b = TCRnonCO2, a = TF2010 - afwijking_nonCO2, col = "red")
+abline(b = TCRnonCO2, a = TF2010 + afwijking_nonCO2, col = "red")
+
+t <- ggplot(nonCO2ssp.gather[variable %in% c('tempStijging_door_F_nonCO2.met.avg')])
+t = t + geom_point(aes(x=deltaCO2,y=value),stat="identity")
+#t = t + geom_smooth(aes(x=deltaCO2,y=value),method = 'lm',formula = y~x, se=F)
+t = t + geom_abline(intercept = TF2010, slope = TCRnonCO2, color="blue", size=1)
+t = t + geom_abline(intercept = TF2010 - afwijking_nonCO2, slope = TCRnonCO2, color="red")
+t = t + geom_abline(intercept = TF2010 + afwijking_nonCO2, slope = TCRnonCO2, color="red")
+t = t + theme_bw() + theme(text = element_text(size = 13), axis.text.x=element_text(size=12), axis.text.y=element_text(size=12))
+t = t + labs(x = expression(Cumulative~carbon~emissions~(2010-2100)~(TtCO[2])), y = expression(Temperature~change~relative~to~p.i.~( degree*C)))
+t
 
 
 #----------- Maak sample ----------------------

@@ -343,7 +343,7 @@ source("TCRE+SSPnonCO2.R")
 
 # krijgt een CC matrix
 CCmatNOcosts <- f.CCmatrix(N,s.seed)
-CCdataNOcosts = data.table(CCmatNOcosts[[1]])
+CCdataNOcosts = data.table(CCmatNOcosts[[2]])
 # maak er een 'werkbaarder' format van
 CCNOcosts <-gather(CCdataNOcosts,variable,value,c('T2010','TCRE','nonCO2'))
 CCNOcosts=data.table(CCNOcosts)
@@ -357,7 +357,7 @@ q = ggplot(CCNOcosts[variable %in% c('T2010','TCRE','nonCO2')])
 q = q + geom_bar(aes(x=temp,y=value,fill=variable),stat="identity",position="fill")
 q = q + theme_bw()# + theme(axis.text.x=element_text(size=12))
 q = q + scale_fill_manual(values=c("CO22010"="grey","cumuCO2result"="dark blue","T2010"="black","TCRE"="green","nonCO2"="blue"))
-q = q + ggtitle("CC values of T2010, TCRE and nonCO2")
+q = q + ggtitle("SRCC^2 first step")
 q
 
 ggsave(paste("CC_T2010_TCRE_nonCO2.png"),q)

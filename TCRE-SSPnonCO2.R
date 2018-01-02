@@ -23,12 +23,12 @@ source("packages.R")
 
 # tweede pogin
 # roze:
-#cumuvstempLL <- read.csv(file = "./../Databases/TCRE_pink_LL.txt", header = TRUE)
-#cumuvstempUL <- read.csv(file = "./../Databases/TCRE_pink_UL.txt", header = TRUE)
+cumuvstempLL <- read.csv(file = "./../Databases/TCRE_pink_LL.txt", header = TRUE)
+cumuvstempUL <- read.csv(file = "./../Databases/TCRE_pink_UL.txt", header = TRUE)
 
 # grijs:
-cumuvstempLL <- read.csv(file = "./../Databases/TCRE_gray_LL.txt", header = TRUE)
-cumuvstempUL <- read.csv(file = "./../Databases/TCRE_gray_UL.txt", header = TRUE)
+#cumuvstempLL <- read.csv(file = "./../Databases/TCRE_gray_LL.txt", header = TRUE)
+#cumuvstempUL <- read.csv(file = "./../Databases/TCRE_gray_UL.txt", header = TRUE)
 
 
 # schalen naar Tt
