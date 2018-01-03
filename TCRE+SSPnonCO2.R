@@ -176,19 +176,26 @@ fitlijnNaarRoze <- lm(data = nonCO2ssp, I(tempStijging_door_F_nonCO2.met.avg - T
 plot(tempStijging_door_F_nonCO2.met.avg~nonCO2ssp$CumCO2..GtCO2., main = "Temperatuurstijging door F_nonCO2 (gem. verh.)", xlab = "deltaCO2 (TtCO2)", ylab = "T (*C)")
 abline(coef(fitlijnNaarRoze)[1],TCRnonCO2NaarRoze)
 
+fitlijnNaarRozeLijn <- function(x) {
+  return(TCRnonCO2NaarRoze*x + coef(fitlijnNaarRoze[1]))
+}
 
+predict.1 <- tempStijging_door_F_nonCO2.met.avg
+actual.1 <- fitlijnNaarRozeLijn(nonCO2ssp$CumCO2..GtCO2.)
+
+R2 <- 1 - (sum((actual.1-predict.1)^2)/sum((actual.1-mean(actual.1))^2))
 
 # hellingshoek best-fit-lijn
 TCRnonCO2 <- coef(fitlijn)[2]
-TCRnonCO2 <- TCRnonCO2NaarRoze
+#TCRnonCO2 <- TCRnonCO2NaarRoze
 
 # intercept best-fit-lijn
 TF2010 <- coef(fitlijn)[1]
-TF2010 <- coef(fitlijnNaarRoze[1])
+#TF2010 <- coef(fitlijnNaarRoze[1])
 
 
 # hij ligt steeds maximaal ongeveer 0.2 onder of bover de best-fit-lijn, dus
-afwijking_nonCO2 <- 0.23
+afwijking_nonCO2 <- 0.35
 
 abline(b = TCRnonCO2, a = TF2010 - afwijking_nonCO2, col = "red")
 abline(b = TCRnonCO2, a = TF2010 + afwijking_nonCO2, col = "red")
@@ -221,10 +228,13 @@ f.cumuvstemp.sample <- function(N, f.seed) {
   # transformeer random LHS naar LHS met goede parameters
   #T2010 <- qnorm(x[,1], mean=T2010mean, sd=T2010std)
   T2010 <- qpert(x[,1], 0.82, 0.895, 0.98, shape = 4)
+  #T2010 <- qpert(x[,1], 0.895, 0.895, 0.895, shape = 4)
   #TCRE <- qpert(x[,2], coef(fLL)[2], TCREmean, coef(fUL)[2], shape = 4)
   TCRE <- qpert(x[,2], TCREmin, TCREmin + (TCREmax-TCREmin)*(1-0.27), TCREmax, shape = 4)
   #TCRE <- qpert(x[,2], TCREmin, (TCREmin + TCREmax)/2, TCREmax, shape = 4)
+  #TCRE <- qpert(x[,2], TCREmin + (TCREmax-TCREmin)*(1-0.27), TCREmin + (TCREmax-TCREmin)*(1-0.27), TCREmin + (TCREmax-TCREmin)*(1-0.27), shape = 4)
   nonCO2 <- qpert(x[,3], -1*afwijking_nonCO2 + TF2010, TF2010, afwijking_nonCO2 + TF2010, shape = 4) # gemiddelde niet rond 0 maar rond de 2010 waarde!
+  #nonCO2 <- qpert(x[,3], TF2010, TF2010, TF2010, shape = 4) # gemiddelde niet rond 0 maar rond de 2010 waarde!
   
   
   # bundel in dataframe
